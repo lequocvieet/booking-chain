@@ -39,6 +39,30 @@ func GetHotelContract(privateKeyAddress string, value uint64) (*wrap_contract.Ho
 	return conn, auth
 }
 
+func GetRoomNFTContract(privateKeyAddress string, value uint64) (*wrap_contract.RoomNFT, *bind.TransactOpts) {
+	// address of etherum testnet node
+	local_hardhat := "ws://127.0.0.1:8545"
+	client, err := ethclient.Dial(local_hardhat)
+	if err != nil {
+		panic(err)
+	}
+	deployed_room_nft_contract_address := os.Getenv("DEPLOYED_ROOMNFT_CONTRACT_ADDRESS")
+	conn, err := wrap_contract.NewRoomNFT(common.HexToAddress(deployed_room_nft_contract_address), client)
+	if err != nil {
+		panic(err)
+	}
+
+	var auth *bind.TransactOpts
+	if privateKeyAddress != "" {
+		auth, err = GetAccountAuth(client, privateKeyAddress, value)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	return conn, auth
+}
+
 func GetAccountAuth(client *ethclient.Client, privateKeyAddress string, value uint64) (*bind.TransactOpts, error) {
 
 	privateKey, err := crypto.HexToECDSA(privateKeyAddress)
@@ -78,4 +102,158 @@ func GetAccountAuth(client *ethclient.Client, privateKeyAddress string, value ui
 	auth.GasPrice, err = client.SuggestGasPrice(context.Background())
 	fmt.Print("hi")
 	return auth, nil
+}
+
+func ListenCreateListRoomEvent(landLordAddress common.Address) *wrap_contract.HotelCreateListRoom {
+
+	// address of etherum local node
+	local_hardhat := "ws://127.0.0.1:8545"
+	client, err := ethclient.Dial(local_hardhat)
+	if err != nil {
+		fmt.Println("error", err)
+		panic(err)
+	}
+	deployed_hotel_contract_address := os.Getenv("DEPLOYED_HOTEL_CONTRACT_ADDRESS")
+	conn, err := wrap_contract.NewHotel(common.HexToAddress(deployed_hotel_contract_address), client)
+	if err != nil {
+		panic(err)
+	}
+	var landLordAddresses []common.Address
+	landLordAddresses = append(landLordAddresses, landLordAddress)
+
+	// Filter event
+	filterOpts := &bind.FilterOpts{Context: context.Background(), Start: 0, End: nil}
+	itr, err := conn.FilterCreateListRoom(filterOpts, landLordAddresses)
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
+	var events []*wrap_contract.HotelCreateListRoom
+	//Loop over all found events
+	for itr.Next() {
+		event := itr.Event
+		events = append(events, event)
+	}
+	return events[len(events)-1]
+}
+
+func ListenBookRoomEvent() *wrap_contract.HotelBookRoom {
+
+	// address of etherum local node
+	local_hardhat := "ws://127.0.0.1:8545"
+	client, err := ethclient.Dial(local_hardhat)
+	if err != nil {
+		fmt.Println("error", err)
+		panic(err)
+	}
+	deployed_hotel_contract_address := os.Getenv("DEPLOYED_HOTEL_CONTRACT_ADDRESS")
+	conn, err := wrap_contract.NewHotel(common.HexToAddress(deployed_hotel_contract_address), client)
+	if err != nil {
+		panic(err)
+	}
+	// Filter event
+	filterOpts := &bind.FilterOpts{Context: context.Background(), Start: 0, End: nil}
+	itr, err := conn.FilterBookRoom(filterOpts)
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
+	var events []*wrap_contract.HotelBookRoom
+	//Loop over all found events
+	for itr.Next() {
+		event := itr.Event
+		events = append(events, event)
+	}
+	return events[len(events)-1]
+}
+
+func ListenCancelBookRoomEvent() *wrap_contract.HotelCancelBookRoom {
+
+	// address of etherum local node
+	local_hardhat := "ws://127.0.0.1:8545"
+	client, err := ethclient.Dial(local_hardhat)
+	if err != nil {
+		fmt.Println("error", err)
+		panic(err)
+	}
+	deployed_hotel_contract_address := os.Getenv("DEPLOYED_HOTEL_CONTRACT_ADDRESS")
+	conn, err := wrap_contract.NewHotel(common.HexToAddress(deployed_hotel_contract_address), client)
+	if err != nil {
+		panic(err)
+	}
+	// Filter event
+	filterOpts := &bind.FilterOpts{Context: context.Background(), Start: 0, End: nil}
+	itr, err := conn.FilterCancelBookRoom(filterOpts)
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
+	var events []*wrap_contract.HotelCancelBookRoom
+	//Loop over all found events
+	for itr.Next() {
+		event := itr.Event
+		events = append(events, event)
+	}
+	return events[len(events)-1]
+}
+
+func ListenCheckInEvent(checker common.Address) *wrap_contract.HotelCheckIn {
+
+	// address of etherum local node
+	local_hardhat := "ws://127.0.0.1:8545"
+	client, err := ethclient.Dial(local_hardhat)
+	if err != nil {
+		fmt.Println("error", err)
+		panic(err)
+	}
+	deployed_hotel_contract_address := os.Getenv("DEPLOYED_HOTEL_CONTRACT_ADDRESS")
+	conn, err := wrap_contract.NewHotel(common.HexToAddress(deployed_hotel_contract_address), client)
+	if err != nil {
+		panic(err)
+	}
+	// Filter event
+	filterOpts := &bind.FilterOpts{Context: context.Background(), Start: 0, End: nil}
+	itr, err := conn.FilterCheckIn(filterOpts, checker)
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
+	var events []*wrap_contract.HotelCheckIn
+	//Loop over all found events
+	for itr.Next() {
+		event := itr.Event
+		events = append(events, event)
+	}
+	return events[len(events)-1]
+}
+
+func CaculateAllBookRoomEventByRoomID(roomId int) int {
+	// address of etherum local node
+	local_hardhat := "ws://127.0.0.1:8545"
+	client, err := ethclient.Dial(local_hardhat)
+	if err != nil {
+		fmt.Println("error", err)
+		panic(err)
+	}
+	deployed_hotel_contract_address := os.Getenv("DEPLOYED_HOTEL_CONTRACT_ADDRESS")
+	conn, err := wrap_contract.NewHotel(common.HexToAddress(deployed_hotel_contract_address), client)
+	if err != nil {
+		panic(err)
+	}
+	// Filter event
+	filterOpts := &bind.FilterOpts{Context: context.Background(), Start: 0, End: nil}
+	itr, err := conn.FilterBookRoom(filterOpts)
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
+	//Loop over all found events
+	var count int = 0
+	for itr.Next() {
+		event := itr.Event
+		if int(event.RoomId.Uint64()) == roomId {
+			count++
+		}
+	}
+	return count
 }

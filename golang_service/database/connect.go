@@ -23,7 +23,7 @@ func Init() *gorm.DB {
 	fmt.Print(err)
 	db.AutoMigrate(&models.ListRoom{})
 	db.AutoMigrate(&models.User{})
-	db.AutoMigrate(&models.RoomState{})
+	db.AutoMigrate(&models.StateRoom{})
 	db.AutoMigrate(&models.RoomNFT{})
 
 	return db

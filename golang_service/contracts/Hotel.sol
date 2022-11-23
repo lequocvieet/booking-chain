@@ -26,33 +26,39 @@ contract Hotel is ReentrancyGuard {
 
     event CreateListRoom(
         uint256 listRoomId,
-        address indexed owner    
+        address indexed owner,
+        uint256 timestamp    
     );
 
     event DeleteListRoom(
-        address indexed deleter
+        address indexed deleter,
+        uint256 timestamp   
     );
 
     event BookRoom(
         uint256 roomId,  //real room id
-        uint256[] dates,  // list of dates book
+        uint256 numberOfdates,  // number of dates book
         uint256 startTokenId,  
-        address booker
+        address booker,
+        uint256 timestamp   
     );
 
     event CancelBookRoom(
         uint256[] tokenIds,
-        address canceler
+        address canceler,
+        uint256 timestamp   
     );
 
     event CheckIn(
          uint256[] tokenIds,
-         address checker
+         address checker,
+         uint256 timestamp   
 
     );
 
     event CheckOut(
-        uint256 tokenId
+        uint256 tokenId,
+        uint256 timestamp   
     );
     function createListRoom() external nonReentrant{
     require(msg.sender==landLord,"You must be Land Lord to Create List Room");
@@ -61,7 +67,7 @@ contract Hotel is ReentrancyGuard {
     listRoom.listRoomId=listRoomCount;
     listRoom.owner=landLord;
     listRooms.push(listRoom);
-    emit CreateListRoom(listRoomCount, msg.sender);
+    emit CreateListRoom(listRoomCount, msg.sender,block.timestamp);
     }
 
     function deleteListRoom(uint256 _listRoomId) external nonReentrant{
@@ -72,20 +78,20 @@ contract Hotel is ReentrancyGuard {
         break;
         }    
     }
-    emit DeleteListRoom(msg.sender); 
+    emit DeleteListRoom(msg.sender,block.timestamp); 
     }
 
     function bookRoom( // booker call this function
     uint256 _roomId,//real room off-chain id
-    uint256 _totalPrice,   //Total price after caculated by days*price1day*fee at backend
-    uint256[] calldata _dates // list of book dates
+    uint256 _totalPrice, //Total price after caculated by days*price1day*fee at backend
+    uint256 _numberOfdates  // number of dates book
     )external payable nonReentrant{    
     require(msg.value >= _totalPrice, "not enough ether to book this room");
     uint256 startTokenId=nft.safeMintBatch(
             msg.sender,  
-            _dates.length      //mint a batch of nft
+            _numberOfdates     //mint a batch of nft
             );         
-    emit BookRoom(_roomId,_dates,startTokenId,msg.sender);
+    emit BookRoom(_roomId,_numberOfdates,startTokenId,msg.sender,block.timestamp);
     //update state room at backend after received bookroom event
 
     }
@@ -98,7 +104,7 @@ contract Hotel is ReentrancyGuard {
          nft.burn(_tokenIds[i]);
     }
     payable(msg.sender).transfer(_price);//repay room price for canceler
-    emit CancelBookRoom(_tokenIds,msg.sender);
+    emit CancelBookRoom(_tokenIds,msg.sender,block.timestamp);
     // catch event delete roomNFT off-chain
     }
 
@@ -108,12 +114,13 @@ contract Hotel is ReentrancyGuard {
             require(owner==msg.sender,"You are not owner of this nft");
             nft.transferFrom(msg.sender,address(this),_tokenIds[i]);//tranfer nft to hotel
         }
-        emit CheckIn(_tokenIds,msg.sender);
+        emit CheckIn(_tokenIds,msg.sender,block.timestamp);
     }
 
     function checkOut(uint256 _tokenId)public{
+        //todo modify this function
         require(nft.ownerOf(_tokenId)==msg.sender,"You are not owner of this nft");
-        emit CheckOut(_tokenId);
+        emit CheckOut(_tokenId,block.timestamp);
     }
 
     function requestPayment(uint256 _totalPrice)public payable{
@@ -121,6 +128,10 @@ contract Hotel is ReentrancyGuard {
     require(msg.sender==landLord,"You must be Land Lord to Request Payment");
     payable(msg.sender).transfer(_totalPrice);
 
+    }
+
+    function getOwnerOf(uint256 _tokenId) public view returns (address){
+       return nft.ownerOf(_tokenId);
     }
 
 }
