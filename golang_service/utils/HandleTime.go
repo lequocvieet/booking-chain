@@ -22,6 +22,6 @@ func FormatTime(stringTime string) time.Time {
 func SubtractTime(end time.Time, start time.Time) int {
 	number := end.Sub(start)
 	fmt.Println(int(number.Hours() / 24)) // number of days
-	return int(number.Hours() / 24)
+	return int(number.Hours()/24) + 1
 
 }

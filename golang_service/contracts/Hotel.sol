@@ -39,25 +39,24 @@ contract Hotel is ReentrancyGuard {
         uint256 roomId,  //real room id
         uint256 numberOfdates,  // number of dates book
         uint256 startTokenId,  
-        address booker,
+        address indexed booker,
         uint256 timestamp   
     );
 
     event CancelBookRoom(
         uint256[] tokenIds,
-        address canceler,
+        address indexed canceler,
         uint256 timestamp   
     );
 
     event CheckIn(
          uint256[] tokenIds,
-         address checker,
+         address indexed checker,
          uint256 timestamp   
 
     );
 
     event CheckOut(
-        uint256 tokenId,
         uint256 timestamp   
     );
     function createListRoom() external nonReentrant{
@@ -96,7 +95,7 @@ contract Hotel is ReentrancyGuard {
 
     }
 
-    function cancelBookRoom( // owner nft will call this function
+    function cancelBookRoom( // canceler nft will call this function
     uint256[] memory _tokenIds,
     uint256 _price    
     ) public payable{// check room is booked at backend
@@ -117,10 +116,8 @@ contract Hotel is ReentrancyGuard {
         emit CheckIn(_tokenIds,msg.sender,block.timestamp);
     }
 
-    function checkOut(uint256 _tokenId)public{
-        //todo modify this function
-        require(nft.ownerOf(_tokenId)==msg.sender,"You are not owner of this nft");
-        emit CheckOut(_tokenId,block.timestamp);
+    function checkOut()public{
+        emit CheckOut(block.timestamp);
     }
 
     function requestPayment(uint256 _totalPrice)public payable{
