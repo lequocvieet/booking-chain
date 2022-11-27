@@ -70,7 +70,7 @@ contract Hotel is ReentrancyGuard {
     }
 
     function deleteListRoom(uint256 _listRoomId) external nonReentrant{
-    require(msg.sender==landLord,"You must be Land Lord to Create List Room");
+    require(msg.sender==landLord,"You must be Land Lord to Delete List Room");
     for(uint256 i=0;i<listRooms.length;i++){
         if(listRooms[i].listRoomId==_listRoomId){
         delete listRooms[i]; //delete listRoom in listRoom array

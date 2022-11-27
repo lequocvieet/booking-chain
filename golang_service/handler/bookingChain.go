@@ -136,9 +136,9 @@ func (h handler) CreateListRoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var landLord models.User
-	errFindLandLord := h.DB.Where("user_name = ?", landLordName).First(&landLord)
-	if errFindLandLord.Error != nil {
-		res.JSON(w, 400, "Cannot find landLord!")
+	h.DB.Where("user_name = ?", landLordName).First(&landLord)
+	if landLord.Role != "landlord" {
+		res.JSON(w, 400, "You must be landlord to execute this function!")
 		return
 	}
 	//create transaction on blockchain
@@ -169,9 +169,9 @@ func (h handler) DeleteListRoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var landLord models.User
-	errFindLandLord := h.DB.Where("user_name = ?", landLordName).First(&landLord)
-	if errFindLandLord.Error != nil {
-		res.JSON(w, 400, "Cannot find landLord!")
+	h.DB.Where("user_name = ?", landLordName).First(&landLord)
+	if landLord.Role != "landlord" {
+		res.JSON(w, 400, "You must be landlord to execute this function!")
 		return
 	}
 
@@ -205,9 +205,9 @@ func (h handler) CreateRoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var landLord models.User
-	errFindLandLord := h.DB.Where("user_name = ?", landLordName).First(&landLord)
-	if errFindLandLord.Error != nil {
-		res.JSON(w, 400, "Cannot find landLord!")
+	h.DB.Where("user_name = ?", landLordName).First(&landLord)
+	if landLord.Role != "landlord" {
+		res.JSON(w, 400, "You must be landlord to execute this function!")
 		return
 	}
 
@@ -245,9 +245,9 @@ func (h handler) UpdateRoomState(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var landLord models.User
-	errFindLandLord := h.DB.Where("user_name = ?", landLordName).First(&landLord)
-	if errFindLandLord.Error != nil {
-		res.JSON(w, 400, "Cannot find landLord!")
+	h.DB.Where("user_name = ?", landLordName).First(&landLord)
+	if landLord.Role != "landlord" {
+		res.JSON(w, 400, "You must be landlord to execute this function!")
 		return
 	}
 	stateRoomId := r.PostFormValue("stateRoomId")
@@ -268,6 +268,12 @@ func (h handler) UpdateRoomState(w http.ResponseWriter, r *http.Request) {
 	errFindRoom := h.DB.Where("id= ?", roomId).First(&room)
 	if errFindRoom.Error != nil {
 		res.JSON(w, 400, "Room id does not exist!")
+		return
+	}
+
+	//verify update room state in the past
+	if endUpdate.Before(time.Now()) {
+		res.JSON(w, 400, "Can not update state room in the past!")
 		return
 	}
 
@@ -317,11 +323,8 @@ func (h handler) BookRoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var user models.User
-	errFindUser := h.DB.Where("user_name = ?", userName).First(&user)
-	if errFindUser.Error != nil {
-		res.JSON(w, 400, "Cannot find user!")
-		return
-	}
+	h.DB.Where("user_name = ?", userName).First(&user)
+
 	roomId := r.PostFormValue("roomId")
 	listRoomId := r.PostFormValue("listRoomId")
 	startDay := res.FormatTime(r.PostFormValue("startDay"))
@@ -345,6 +348,12 @@ func (h handler) BookRoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Todo check day format
+
+	//verify update room state in the past
+	if startDay.Before(time.Now()) || endDay.Before(time.Now()) {
+		res.JSON(w, 400, "Can not book room in the past!")
+		return
+	}
 
 	//verify all room state in range book is availale
 	var stateRooms []models.StateRoom
@@ -408,11 +417,8 @@ func (h handler) CancelBookRoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var user models.User
-	errFindUser := h.DB.Where("user_name = ?", userName).First(&user)
-	if errFindUser.Error != nil {
-		res.JSON(w, 400, "Cannot find user!")
-		return
-	}
+	h.DB.Where("user_name = ?", userName).First(&user)
+
 	type RoomNFTIds struct {
 		RoomNFTIds []int `json:"roomNFTIds"`
 	}
@@ -531,11 +537,8 @@ func (h handler) CheckIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var user models.User
-	errFindUser := h.DB.Where("user_name = ?", userName).First(&user)
-	if errFindUser.Error != nil {
-		res.JSON(w, 400, "Cannot find user!")
-		return
-	}
+	h.DB.Where("user_name = ?", userName).First(&user)
+
 	type RoomNFTIds struct {
 		RoomNFTIds []int `json:"roomNFTIds"`
 	}
@@ -591,11 +594,22 @@ func (h handler) CheckIn(w http.ResponseWriter, r *http.Request) {
 	//currentTime.After(roomNFTs[0].DateValid) &&
 	if currentTime.After(roomNFTs[0].DateValid) && currentTime.Before(roomNFTs[0].DateValid.Add(time.Hour)) {
 
+		//approve permission for hotel contract
+		roomnft_conn, auth_nft := contracts.GetRoomNFTContract(user.PrivateKey, 0)
+		contractAddress := common.HexToAddress(os.Getenv("DEPLOYED_HOTEL_CONTRACT_ADDRESS"))
+		_, errSetApproval := roomnft_conn.SetApprovalForAll(auth_nft, contractAddress, true)
+		if errSetApproval != nil {
+			fmt.Println("error ", err)
+			return
+
+		}
+
 		//Call check in on-chain
 		conn, auth := contracts.GetHotelContract(user.PrivateKey, 0)
+		fmt.Print("tokenIds ", tokenIds)
 		_, err := conn.CheckIn(auth, tokenIds)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("contract error", err)
 			return
 		}
 		res.JSON(w, 201, "Check in success!")
@@ -613,28 +627,26 @@ func (h handler) CheckOut(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var user models.User
-	errFindUser := h.DB.Where("user_name = ?", userName).First(&user)
-	if errFindUser.Error != nil {
-		res.JSON(w, 400, "Cannot find user!")
-		return
-	}
+	h.DB.Where("user_name = ?", userName).First(&user)
+
 	//Listen checkin event to know that user already checkin can checkout
 	event := contracts.ListenCheckInEvent(common.HexToAddress(user.Address))
 	if event != nil {
 		//check time call checkout is 12pm
 		currentTime := time.Now()
 		currentTime.Format(dateLayout)
+		//test: currentTime.Hour() != 0   replace currentTime.Hour() == 12
 		if currentTime.Hour() == 12 {
 
 			//create transaction on blockchain
 			conn, auth := contracts.GetHotelContract(user.PrivateKey, 0)
-			result, err := conn.CheckOut(auth)
+			_, err := conn.CheckOut(auth)
 			if err != nil {
 				fmt.Println(err)
-				res.JSON(w, 201, "Check out success!")
+				res.JSON(w, 400, "Check out has fail!")
 				return
 			}
-			res.JSON(w, 201, result)
+			res.JSON(w, 201, "Check out success!")
 			return
 		}
 		res.JSON(w, 400, "Cannot checkout yet !")
@@ -652,25 +664,38 @@ func (h handler) RequestPayment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var landLord models.User
-	errFindLandLord := h.DB.Where("user_name = ?", landLordName).First(&landLord)
-	if errFindLandLord.Error != nil {
-		res.JSON(w, 400, "Cannot find landLord!")
+	h.DB.Where("user_name = ?", landLordName).First(&landLord)
+	if landLord.Role != "landlord" {
+		res.JSON(w, 400, "You must be landlord to execute this function!")
 		return
 	}
-	roomNFTIds := r.PostFormValue("roomNFTids")
-	//convert roomNFTIds to array
+	type RoomNFTIds struct {
+		RoomNFTIds []int `json:"roomNFTIds"`
+	}
+	var roomNFTId RoomNFTIds
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		res.JSON(w, 400, "Read Body error!")
+		return
+	}
+	err = json.Unmarshal(body, &roomNFTId)
+	if err != nil {
+		fmt.Print(err)
+		res.JSON(w, 400, "Unmarshal error!")
+		return
+	}
 	//verify that roomNFT id  exist
 	var roomNFTs []models.RoomNFT
 	var totalPrice float32 = 0
-	for i := 0; i < len(roomNFTIds); i++ {
+	for i := 0; i < len(roomNFTId.RoomNFTIds); i++ {
 		var roomNFT models.RoomNFT
 		var room models.Room
-		errFindRoomNFT := h.DB.Where("id = ?", roomNFTIds[i]).First(&roomNFT)
+		errFindRoomNFT := h.DB.Where("id = ?", roomNFTId.RoomNFTIds[i]).First(&roomNFT)
 		if errFindRoomNFT.Error != nil {
-			res.JSON(w, 400, "Cannot find roomNFT !")
+			res.JSON(w, 400, "RoomNFT does not exist !")
 			return
 		}
-		errFindRoom := h.DB.Where("room_nft_id = ?", roomNFTIds[i]).First(&room)
+		errFindRoom := h.DB.Where("id = ?", roomNFT.RoomId).First(&room)
 		if errFindRoom.Error != nil {
 			res.JSON(w, 400, "Cannot find room !")
 			return
@@ -682,12 +707,12 @@ func (h handler) RequestPayment(w http.ResponseWriter, r *http.Request) {
 		price := room.PricePerDay * (float32(numberOfBookRequest) - float32(feeCancel*numberOfCancelBookRequest))
 		totalPrice += price
 	}
+	fmt.Print("TotalPrice ", totalPrice)
 
-	// checktime of the last room requested is 15 days after
+	//checktime is 15 days after DateValid
 	currentTime := time.Now()
-	currentTime.Format(dateLayout)
 	for i := 0; i < len(roomNFTs); i++ {
-
+		//test: comment all for loop to by pass this case
 		if !currentTime.After(roomNFTs[i].DateValid.AddDate(0, 0, 15)) {
 			//Requested only affect after 15 days
 			res.JSON(w, 400, "Not enough 15 days!")
@@ -700,7 +725,9 @@ func (h handler) RequestPayment(w http.ResponseWriter, r *http.Request) {
 	_, err = conn.RequestPayment(auth, res.Float32ToBigInt(totalPrice))
 	if err != nil {
 		fmt.Println(err)
-		res.JSON(w, 500, "Request payment success!")
+		res.JSON(w, 500, "Request payment has faild!")
 		return
 	}
+	res.JSON(w, 201, "Request payment success!")
+	return
 }
