@@ -592,7 +592,7 @@ func (h handler) CheckIn(w http.ResponseWriter, r *http.Request) {
 	//check time
 	currentTime := time.Now() //14pm-15pm
 	//currentTime.After(roomNFTs[0].DateValid) &&
-	if currentTime.After(roomNFTs[0].DateValid) && currentTime.Before(roomNFTs[0].DateValid.Add(time.Hour)) {
+	if currentTime.Before(roomNFTs[0].DateValid.Add(time.Hour)) {
 
 		//approve permission for hotel contract
 		roomnft_conn, auth_nft := contracts.GetRoomNFTContract(user.PrivateKey, 0)

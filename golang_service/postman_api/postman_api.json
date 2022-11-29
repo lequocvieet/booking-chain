@@ -1,0 +1,462 @@
+{
+	"info": {
+		"_postman_id": "8a94c81f-8696-45f1-92f9-29e6792a6f32",
+		"name": "Booking-chain-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15936437"
+	},
+	"item": [
+		{
+			"name": "request-payment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2Njk2MDA3NjUsInVzZXJuYW1lIjoiamFjayJ9.Eg16u1FfAbNnQzMMuJmrsf6_oudv47sC9rUScgnVvdY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"roomNFTIds\":[32]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/request-payment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"request-payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check-out",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2Njk1ODYwOTMsInVzZXJuYW1lIjoidmllZXQifQ.dTxRU793ZAyK9H-dMLGkn14-MIOBFkQgWA6n5nnwqGk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/check-out",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"check-out"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check-in",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2Njk3NTE3NTIsInVzZXJuYW1lIjoianVseSJ9.XOM_ehP8epvysWyl-OxBWeUg9U3hE5sjIj6zFeUUOLw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"roomNFTIds\":[35]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/check-in",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"check-in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cancel-book-room",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2Njk3NTE3NTIsInVzZXJuYW1lIjoianVseSJ9.XOM_ehP8epvysWyl-OxBWeUg9U3hE5sjIj6zFeUUOLw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"roomNFTIds\":[33,34]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/cancel-book-room",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"cancel-book-room"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "book-room",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2Njk3NTE3NTIsInVzZXJuYW1lIjoianVseSJ9.XOM_ehP8epvysWyl-OxBWeUg9U3hE5sjIj6zFeUUOLw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "roomId",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "listRoomId",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "startDay",
+							"value": "2022-12-03",
+							"type": "text"
+						},
+						{
+							"key": "endDay",
+							"value": "2022-12-07",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/book-room",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"book-room"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update-room-state",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2Njk3NTE0NTAsInVzZXJuYW1lIjoiamFjayJ9.QzPaAPSR0DPgE49c202_arnUFqVcQz9vUEjOGkg-tNw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "stateRoomId",
+							"value": "7",
+							"type": "text"
+						},
+						{
+							"key": "listRoomId",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "roomId",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "startUpdate",
+							"value": "2022-12-01",
+							"type": "text"
+						},
+						{
+							"key": "endUpdate",
+							"value": "2022-12-04",
+							"type": "text"
+						},
+						{
+							"key": "state",
+							"value": "Fix the air condition",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/update-room-state",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"update-room-state"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-room",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2Njk3NTE0NTAsInVzZXJuYW1lIjoiamFjayJ9.QzPaAPSR0DPgE49c202_arnUFqVcQz9vUEjOGkg-tNw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "listRoomId",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "pricePerDay",
+							"value": "100",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/create-room",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"create-room"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete-list-room",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2NjkzMTM1MjAsInVzZXJuYW1lIjoidmllZXQifQ.pmBSh8dv2KMChGLQeM-yQjJn32aJcnF66DjvyeOR9bg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "listRoomId",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/delete-list-room",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"delete-list-room"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-list-room",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2Njk3NTE0NTAsInVzZXJuYW1lIjoiamFjayJ9.QzPaAPSR0DPgE49c202_arnUFqVcQz9vUEjOGkg-tNw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "http://localhost:8000/create-list-room",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"create-list-room"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "july",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "july",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "may",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "may@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "may",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

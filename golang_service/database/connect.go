@@ -11,8 +11,6 @@ import (
 
 func Init() *gorm.DB {
 	dsn := "host=localhost user=postgres password=postgres dbname=booking-chain port=5432 sslmode=disable TimeZone=Asia/Shanghai"
-	//dbURL := "postgres://postgres:postgres@localhost:5432/test_online"
-
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
