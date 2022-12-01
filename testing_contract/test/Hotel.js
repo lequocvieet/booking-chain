@@ -205,45 +205,45 @@ describe.only("Test Hotel contract", function () {
     });
 
 
-    // it("Should cancel book room ", async function () {
-    //   const roomId = 1;
-    //   const price = 5; //5 ether                       // parameter for book
-    //   const numberOfDates = 5;
+    it("Should cancel book room ", async function () {
+      const roomId = 1;
+      const price = 5; //5 ether                       // parameter for book
+      const numberOfDates = 5;
 
-    //   const tokenIds = [0, 1, 2];//burn 0,1,2      //parameter for cancel
-    //   const cancelPrice = 2;// 2 ether
-
-
-    //   const canceledRooms = await listenCancelBookRoomEvent(roomId, price, numberOfDates, tokenIds, cancelPrice)
-    //   var burnedTokenId = [];
-    //   for (let index = 0; index < canceledRooms.length; index++) {
-    //     const tokenId = canceledRooms[index].tokenIds;
-    //     burnedTokenId.push(tokenId);
-
-    //   }
-    //   expect(burnedTokenId).to.equal(tokenIds)
-
-    // }).timeout(100000);
+      const tokenIds = [0, 1, 2];//burn 0,1,2      //parameter for cancel
+      const cancelPrice = 2;// 2 ether
 
 
-    // it("Should check in ", async function () {
-    //   const roomId = 1;
-    //   const price = 5; //5 ether                       // parameter for book
-    //   const numberOfDates = 5;
+      const canceledRooms = await listenCancelBookRoomEvent(roomId, price, numberOfDates, tokenIds, cancelPrice)
+      var burnedTokenId = [];
+      for (let index = 0; index < canceledRooms.length; index++) {
+        const tokenId = canceledRooms[index].tokenIds;
+        burnedTokenId.push(tokenId);
+
+      }
+      expect(burnedTokenId).to.equal(tokenIds)
+
+    }).timeout(100000);
 
 
-    //   const tokenIds = [0, 1, 2]// checkin for 3 days in a row
+    it("Should check in ", async function () {
+      const roomId = 1;
+      const price = 5; //5 ether                       // parameter for book
+      const numberOfDates = 5;
 
-    //   const checkInEvents = await listenCheckinEvent(roomId, price, numberOfDates,tokenIds)
-    //   var checkInTokenIds = [];
-    //   for (let index = 0; index < checkInEvents.length; index++) {
-    //     const tokenId = checkInEvents[index].tokenIds;
-    //     checkInTokenIds.push(tokenId);
 
-    //   }
-    //   expect(checkInTokenIds).to.equal(tokenIds)
+      const tokenIds = [0, 1, 2]// checkin for 3 days in a row
 
-    // });
+      const checkInEvents = await listenCheckinEvent(roomId, price, numberOfDates,tokenIds)
+      var checkInTokenIds = [];
+      for (let index = 0; index < checkInEvents.length; index++) {
+        const tokenId = checkInEvents[index].tokenIds;
+        checkInTokenIds.push(tokenId);
+
+      }
+      expect(checkInTokenIds).to.equal(tokenIds)
+
+    });
 
 
     it("Land lord can request payment ", async function () {
