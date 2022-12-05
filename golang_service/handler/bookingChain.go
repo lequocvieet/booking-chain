@@ -349,7 +349,7 @@ func (h handler) BookRoom(w http.ResponseWriter, r *http.Request) {
 
 	//Todo check day format
 
-	//verify update room state in the past
+	//verify book room in the past
 	if startDay.Before(time.Now()) || endDay.Before(time.Now()) {
 		res.JSON(w, 400, "Can not book room in the past!")
 		return

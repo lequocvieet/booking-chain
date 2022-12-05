@@ -20,10 +20,10 @@ contract RoomNFT is ERC721, ERC721Burnable, Ownable {
         return tokenId;
     }
 
-    function safeMintBatch(address to, uint256 amount)
-        public
-        returns (uint256)
-    {
+    function safeMintBatch(
+        address to,
+        uint256 amount
+    ) public returns (uint256) {
         uint256 startTokenId = _tokenIdCounter.current();
         for (uint256 i = 0; i < amount; i++) {
             uint256 tokenId = _tokenIdCounter.current();
@@ -33,4 +33,3 @@ contract RoomNFT is ERC721, ERC721Burnable, Ownable {
         return startTokenId;
     }
 }
-

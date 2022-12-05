@@ -265,5 +265,7 @@ describe.only("Test Hotel contract", function () {
       expect(balanceBefore+price).to.equal(balanceAfter);
     });
 
+    
+
   });
 });
