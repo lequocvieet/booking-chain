@@ -65,8 +65,8 @@ describe("Test", function () {
       .connect(user1)
       .bookRoom(roomId, bookRoomPrice, numberOfDatesBook, {
         value: ethers.utils.parseEther(bookRoomPrice.toString()),
-      })
-    const contractBalanceBefore = await hotel.getContractBalance()
+      });
+    const contractBalanceBefore = await hotel.getContractBalance();
     tx = await hotel
       .connect(user1)
       .cancelBookRoom(
@@ -80,16 +80,21 @@ describe("Test", function () {
     //   block.mockTime,
 
     // )
-    const contractBalanceAfter = await hotel.getContractBalance()
-    cancelPrice = ethers.utils.parseEther(cancelPrice.toString())
-    expect(contractBalanceBefore.sub(contractBalanceAfter)).to.equal( cancelPrice)
+    const contractBalanceAfter = await hotel.getContractBalance();
+    cancelPrice = ethers.utils.parseEther(cancelPrice.toString());
+    expect(contractBalanceBefore.sub(contractBalanceAfter)).to.equal(
+      cancelPrice
+    );
   });
 
   it("Should checkIn", async function () {
-
-    tx = await hotel.connect(user1).bookRoom(roomId, bookRoomPrice, numberOfDatesBook, { value: ethers.utils.parseEther(bookRoomPrice.toString()) })
-    tx=await hotel.connect(user1).checkIn(tokenIds)
-    await expect(tx).to.emit(hotel, "CheckIn")
+    tx = await hotel
+      .connect(user1)
+      .bookRoom(roomId, bookRoomPrice, numberOfDatesBook, {
+        value: ethers.utils.parseEther(bookRoomPrice.toString()),
+      });
+    tx = await hotel.connect(user1).checkIn(tokenIds);
+    await expect(tx).to.emit(hotel, "CheckIn");
     // .withArgs(
     //   tokenIds,
     //   user1.address,
@@ -98,21 +103,31 @@ describe("Test", function () {
     // )
   });
 
-
   it("LandLord should request payment", async function () {
-
-    tx = await hotel.connect(user1).bookRoom(roomId, bookRoomPrice, numberOfDatesBook, { value: ethers.utils.parseEther(bookRoomPrice.toString()) });
-    tx=await hotel.connect(user1).checkIn(tokenIds)
-    await expect(tx).to.emit(hotel, "CheckIn")
+    tx = await hotel
+      .connect(user1)
+      .bookRoom(roomId, bookRoomPrice, numberOfDatesBook, {
+        value: ethers.utils.parseEther(bookRoomPrice.toString()),
+      });
+    tx = await hotel.connect(user1).checkIn(tokenIds);
+    await expect(tx).to.emit(hotel, "CheckIn");
     // .withArgs(
     //   tokenIds,
     //   user1.address,
     //   block.mockTime,
 
     // )
-    const landLordBalanceBefore=await hotel.connect(landLord).getAccountBalance()
-    tx=await hotel.connect(landLord).requestPayment(bookRoomPrice)
-    const landLordBalanceAfter=await hotel.connect(landLord).getAccountBalance()
-    expect(landLordBalanceAfter.sub(landLordBalanceBefore)).to.equal( bookRoomPrice)
+    const landLordBalanceBefore = await hotel
+      .connect(landLord)
+      .getAccountBalance();
+    tx = await hotel
+      .connect(landLord)
+      .requestPayment(ethers.utils.parseEther(bookRoomPrice.toString()));
+    const landLordBalanceAfter = await hotel
+      .connect(landLord)
+      .getAccountBalance();
+    expect(landLordBalanceAfter.sub(landLordBalanceBefore)).to.lessThanOrEqual(
+      ethers.utils.parseEther(bookRoomPrice.toString()) //include fee transaction
+    );
   });
 });
