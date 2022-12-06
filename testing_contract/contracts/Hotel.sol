@@ -7,13 +7,11 @@ import "./RoomNFT.sol";
 
 contract Hotel is ReentrancyGuard {
     uint256 public listRoomCount;
-    address payable public landLord; // address of land lord
     ListRoom[] public listRooms;
     RoomNFT public nft; // address of nft contract
 
-    constructor(address _nftAddress, address payable _landLord) {
+    constructor(address _nftAddress) {
         nft = RoomNFT(_nftAddress);
-        landLord = _landLord;
     }
 
     struct ListRoom {
@@ -23,6 +21,7 @@ contract Hotel is ReentrancyGuard {
 
     mapping(uint256 => uint256) public tokenIdToRoomId;
     mapping(uint256 => ListRoom) public listRoomIdToListRoom;
+    mapping(uint256 => bool) public tokenIdToRoomNFTState;
 
     event CreateListRoom(
         uint256 listRoomId,
@@ -33,7 +32,6 @@ contract Hotel is ReentrancyGuard {
     event DeleteListRoom(address indexed deleter, uint256 timestamp);
 
     event BookRoom(
-        uint256 roomId, //real room id
         uint256 numberOfdates, // number of dates book
         uint256 startTokenId,
         address indexed booker,
@@ -55,23 +53,15 @@ contract Hotel is ReentrancyGuard {
     event CheckOut(uint256 timestamp);
 
     function createListRoom() external nonReentrant {
-        require(
-            msg.sender == landLord,
-            "You must be Land Lord to Create List Room"
-        );
         ListRoom memory listRoom;
         listRoomCount++;
         listRoom.listRoomId = listRoomCount;
-        listRoom.owner = landLord;
+        listRoom.owner = payable(msg.sender);
         listRooms.push(listRoom);
         emit CreateListRoom(listRoomCount, msg.sender, block.timestamp);
     }
 
     function deleteListRoom(uint256 _listRoomId) external nonReentrant {
-        require(
-            msg.sender == landLord,
-            "You must be Land Lord to Delete List Room"
-        );
         for (uint256 i = 0; i < listRooms.length; i++) {
             if (listRooms[i].listRoomId == _listRoomId) {
                 delete listRooms[i]; //delete listRoom in listRoom array
@@ -83,7 +73,6 @@ contract Hotel is ReentrancyGuard {
 
     function bookRoom(
         // booker call this function
-        uint256 _roomId, //real room off-chain id
         uint256 _totalPrice, //Total price after caculated by days*price1day*fee at backend
         uint256 _numberOfdates // number of dates book
     ) external payable nonReentrant {
@@ -92,8 +81,12 @@ contract Hotel is ReentrancyGuard {
             msg.sender,
             _numberOfdates //mint a batch of nft
         );
+        uint256 count = startTokenId;
+        for (uint256 i = 0; i < _numberOfdates; i++) {
+            tokenIdToRoomNFTState[count] = true;
+            count++;
+        }
         emit BookRoom(
-            _roomId,
             _numberOfdates,
             startTokenId,
             msg.sender,
@@ -121,21 +114,29 @@ contract Hotel is ReentrancyGuard {
         for (uint256 i = 0; i < _tokenIds.length; i++) {
             address owner = nft.ownerOf(_tokenIds[i]);
             require(owner == msg.sender, "You are not owner of this nft");
-            nft.transferFrom(msg.sender, address(this), _tokenIds[i]); //tranfer nft to hotel
+            require(
+                tokenIdToRoomNFTState[_tokenIds[i]],
+                "Your NFT not available to checkIn"
+            );
+            tokenIdToRoomNFTState[_tokenIds[i]] = false;// now NFT is un available
         }
         emit CheckIn(_tokenIds, msg.sender, block.timestamp);
     }
 
+    function tranferRoomNFT(
+        uint256[] memory _tokenIds,
+        address receiver
+    ) public {
+        for (uint256 i = 0; i < _tokenIds.length; i++) {
+            nft.transferFrom(msg.sender, receiver, _tokenIds[i]); 
+        }   
+    }
     function checkOut() public {
         emit CheckOut(block.timestamp);
     }
 
     function requestPayment(uint256 _totalPrice) public payable {
         //check valid  day at backend
-        require(
-            msg.sender == landLord,
-            "You must be Land Lord to Request Payment"
-        );
         payable(msg.sender).transfer(_totalPrice);
     }
 
@@ -144,16 +145,14 @@ contract Hotel is ReentrancyGuard {
     }
 
     function getListRooms() public view returns (ListRoom[] memory) {
-        return  listRooms ;
+        return listRooms;
     }
 
-    function getContractBalance() public view returns(uint256){
+    function getContractBalance() public view returns (uint256) {
         return address(this).balance;
     }
 
-    function getAccountBalance() public view returns (uint){
+    function getAccountBalance() public view returns (uint) {
         return msg.sender.balance;
     }
-
-
 }
