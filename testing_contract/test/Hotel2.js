@@ -4,18 +4,20 @@ require("@nomiclabs/hardhat-waffle");
 
 describe("Test", function () {
   beforeEach(async function () {
+    //set up variables test
     [owner, landLord, user1, user2] = await ethers.getSigners();
     bookRoomPrice = 5; // 5 ether
     cancelPrice = 2; //2 ether
     numberOfDatesBook = 4; //4 days
-    roomId = 1; //room id
-    tokenIds = [0, 1, 2]; //burn 0,1,2
+    tokenIds = [0, 1, 2]; //parameter for burn 0,1,2   //parameter for tranfer 0 1 2
+
+    //Deploy 2 contracts
     RoomNFT = await hre.ethers.getContractFactory("RoomNFT");
     roomNFT = await RoomNFT.deploy();
     await roomNFT.deployed();
 
     Hotel = await hre.ethers.getContractFactory("Hotel");
-    hotel = await Hotel.deploy(roomNFT.address, landLord.address);
+    hotel = await Hotel.deploy(roomNFT.address);
     await hotel.deployed();
 
     // Set approval
@@ -42,11 +44,9 @@ describe("Test", function () {
 
   it("Should book room", async function () {
     const contractBalanceBefore = await hotel.getContractBalance();
-    tx = await hotel
-      .connect(user1)
-      .bookRoom(roomId, bookRoomPrice, numberOfDatesBook, {
-        value: ethers.utils.parseEther(bookRoomPrice.toString()),
-      });
+    tx = await hotel.connect(user1).bookRoom(bookRoomPrice, numberOfDatesBook, {
+      value: ethers.utils.parseEther(bookRoomPrice.toString()),
+    });
     await expect(tx).to.emit(hotel, "BookRoom");
     // .withArgs(
     //   roomId,
@@ -59,13 +59,16 @@ describe("Test", function () {
     expect(
       contractBalanceBefore + ethers.utils.parseEther(bookRoomPrice.toString())
     ).to.equal(contractBalanceAfter);
+
+    for (let index = 0; index < tokenIds.length; index++) {
+      //check owner
+      expect(await hotel.getOwnerOf(tokenIds[index])).to.equal(user1.address);
+    }
   });
   it("Should cancel book room", async function () {
-    tx = await hotel
-      .connect(user1)
-      .bookRoom(roomId, bookRoomPrice, numberOfDatesBook, {
-        value: ethers.utils.parseEther(bookRoomPrice.toString()),
-      });
+    tx = await hotel.connect(user1).bookRoom(bookRoomPrice, numberOfDatesBook, {
+      value: ethers.utils.parseEther(bookRoomPrice.toString()),
+    });
     const contractBalanceBefore = await hotel.getContractBalance();
     tx = await hotel
       .connect(user1)
@@ -88,11 +91,9 @@ describe("Test", function () {
   });
 
   it("Should checkIn", async function () {
-    tx = await hotel
-      .connect(user1)
-      .bookRoom(roomId, bookRoomPrice, numberOfDatesBook, {
-        value: ethers.utils.parseEther(bookRoomPrice.toString()),
-      });
+    tx = await hotel.connect(user1).bookRoom(bookRoomPrice, numberOfDatesBook, {
+      value: ethers.utils.parseEther(bookRoomPrice.toString()),
+    });
     tx = await hotel.connect(user1).checkIn(tokenIds);
     await expect(tx).to.emit(hotel, "CheckIn");
     // .withArgs(
@@ -104,11 +105,9 @@ describe("Test", function () {
   });
 
   it("LandLord should request payment", async function () {
-    tx = await hotel
-      .connect(user1)
-      .bookRoom(roomId, bookRoomPrice, numberOfDatesBook, {
-        value: ethers.utils.parseEther(bookRoomPrice.toString()),
-      });
+    tx = await hotel.connect(user1).bookRoom(bookRoomPrice, numberOfDatesBook, {
+      value: ethers.utils.parseEther(bookRoomPrice.toString()),
+    });
     tx = await hotel.connect(user1).checkIn(tokenIds);
     await expect(tx).to.emit(hotel, "CheckIn");
     // .withArgs(
@@ -129,5 +128,20 @@ describe("Test", function () {
     expect(landLordBalanceAfter.sub(landLordBalanceBefore)).to.lessThanOrEqual(
       ethers.utils.parseEther(bookRoomPrice.toString()) //include fee transaction
     );
+  });
+
+  it("should transfer RoomNFT", async function () {
+    tx = await hotel.connect(user1).bookRoom(bookRoomPrice, numberOfDatesBook, {
+      value: ethers.utils.parseEther(bookRoomPrice.toString()),
+    });
+    tx = await hotel.connect(user1).tranferRoomNFT(tokenIds, user2.address);
+    //tranfer RoomNFT from user1 to user2
+    await expect(tx)
+      .to.emit(hotel, "TranferRoomNFT")
+      .withArgs(user1.address, user2.address, tokenIds);
+    for (let index = 0; index < tokenIds.length; index++) {
+      //check owner
+      expect(await hotel.getOwnerOf(tokenIds[index])).to.equal(user2.address);
+    }
   });
 });

@@ -33,6 +33,7 @@ func main() {
 	router.HandleFunc("/check-in", middlewares.CheckJwt(h.CheckIn)).Methods(http.MethodPost)
 	router.HandleFunc("/check-out", middlewares.CheckJwt(h.CheckOut)).Methods(http.MethodPost)
 	router.HandleFunc("/request-payment", middlewares.CheckJwt(h.RequestPayment)).Methods(http.MethodPost)
+	router.HandleFunc("/transfer-roomNFT", middlewares.CheckJwt(h.TransferRoomNFT)).Methods(http.MethodPost)
 	fmt.Println("Listening to port 8000")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }

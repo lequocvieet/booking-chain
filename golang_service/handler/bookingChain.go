@@ -358,8 +358,9 @@ func (h handler) BookRoom(w http.ResponseWriter, r *http.Request) {
 	//verify all room state in range book is availale
 	var stateRooms []models.StateRoom
 	var available bool = true
-	sql := `room_id=? AND list_room_id=? AND start_update >= ? AND end_update <= ?`
-	h.DB.Where(sql, roomId, listRoomId, startDay, endDay).Find(&stateRooms)
+	sql := `room_id=? AND list_room_id=? AND start_update <= ? AND end_update >= ?`
+	h.DB.Where(sql, roomId, listRoomId, startDay, startDay).Find(&stateRooms)
+	h.DB.Where(sql, roomId, listRoomId, endDay, endDay).Find(&stateRooms)
 	if len(stateRooms) != 0 {
 		available = false
 	}
@@ -383,7 +384,7 @@ func (h handler) BookRoom(w http.ResponseWriter, r *http.Request) {
 
 		//create transaction on blockchain
 		conn, auth := contracts.GetHotelContract(user.PrivateKey, uint64(totalPrice))
-		_, err := conn.BookRoom(auth, res.StringToBigInt(roomId), res.Float32ToBigInt(totalPrice), res.IntToBigInt(numberDaysBook))
+		_, err := conn.BookRoom(auth, res.Float32ToBigInt(totalPrice), res.IntToBigInt(numberDaysBook))
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -395,7 +396,7 @@ func (h handler) BookRoom(w http.ResponseWriter, r *http.Request) {
 		for i := 0; i < int(event.NumberOfdates.Uint64()); i++ {
 			var roomNFT models.RoomNFT
 			roomNFT.Booker = event.Booker.String()
-			roomNFT.RoomId = int(event.RoomId.Uint64())
+			roomNFT.RoomId, _ = strconv.Atoi(roomId)
 			roomNFT.TokenId = tokenID
 			roomNFT.DateValid = startDay
 			startDay = startDay.AddDate(0, 0, 1) // increase 1 days for later RoomNFT in for loop
@@ -446,7 +447,6 @@ func (h handler) CancelBookRoom(w http.ResponseWriter, r *http.Request) {
 		}
 		roomNFTs = append(roomNFTs, roomNFT)
 	}
-	//fmt.Print(" roomNFTS ", roomNFTs)
 
 	//Check valid cancel happens before check in time
 	//check in time hard code is 14pm - 15pm
@@ -725,9 +725,61 @@ func (h handler) RequestPayment(w http.ResponseWriter, r *http.Request) {
 	_, err = conn.RequestPayment(auth, res.Float32ToBigInt(totalPrice))
 	if err != nil {
 		fmt.Println(err)
-		res.JSON(w, 500, "Request payment has faild!")
+		res.JSON(w, 500, "Request payment has fail!")
 		return
 	}
 	res.JSON(w, 201, "Request payment success!")
 	return
+}
+
+func (h handler) TransferRoomNFT(w http.ResponseWriter, r *http.Request) {
+	userName, err := jwt.ExtractUsernameFromToken(r)
+	if err != nil {
+		res.JSON(w, 500, "Internal Server Error")
+		return
+	}
+	var user models.User
+	h.DB.Where("user_name = ?", userName).First(&user)
+
+	type RoomNFTIds struct {
+		RoomNFTIds []int  `json:"roomNFTIds"`
+		Receiver   string `json:"receiver"`
+	}
+	var roomNFTId RoomNFTIds
+	var tokenIds []*big.Int
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		res.JSON(w, 400, "Read Body error!")
+		return
+	}
+	err = json.Unmarshal(body, &roomNFTId)
+	if err != nil {
+		fmt.Print(err)
+		res.JSON(w, 400, "Unmarshal error!")
+		return
+	}
+
+	//verify that roomNFT id  exist
+	for i := 0; i < len(roomNFTId.RoomNFTIds); i++ {
+		var roomNFT models.RoomNFT
+		errFindRoomNFT := h.DB.Where("id = ?", roomNFTId.RoomNFTIds[i]).First(&roomNFT)
+		if errFindRoomNFT.Error != nil {
+			res.JSON(w, 400, "RoomNFT does not exist !")
+			return
+		}
+		tokenIds = append(tokenIds, res.IntToBigInt(roomNFT.TokenId))
+
+	}
+
+	//transfer on blockchain
+	conn, auth := contracts.GetHotelContract(user.PrivateKey, 0)
+	_, err = conn.TranferRoomNFT(auth, tokenIds, common.HexToAddress(roomNFTId.Receiver))
+	if err != nil {
+		fmt.Println(err)
+		res.JSON(w, 500, "Transfer RoomNFT has fail!")
+		return
+	}
+	res.JSON(w, 201, "Transfer RoomNFT success!")
+	return
+
 }

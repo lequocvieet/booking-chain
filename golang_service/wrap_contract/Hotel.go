@@ -28,10 +28,16 @@ var (
 	_ = event.NewSubscription
 )
 
+// HotelListRoom is an auto generated low-level Go binding around an user-defined struct.
+type HotelListRoom struct {
+	ListRoomId *big.Int
+	Owner      common.Address
+}
+
 // HotelMetaData contains all meta data concerning the Hotel contract.
 var HotelMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_nftAddress\",\"type\":\"address\"},{\"internalType\":\"addresspayable\",\"name\":\"_landLord\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"roomId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"numberOfdates\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"startTokenId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"booker\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"BookRoom\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256[]\",\"name\":\"tokenIds\",\"type\":\"uint256[]\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"canceler\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"CancelBookRoom\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256[]\",\"name\":\"tokenIds\",\"type\":\"uint256[]\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"checker\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"CheckIn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"CheckOut\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"listRoomId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"CreateListRoom\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"deleter\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"DeleteListRoom\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roomId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_totalPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_numberOfdates\",\"type\":\"uint256\"}],\"name\":\"bookRoom\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256[]\",\"name\":\"_tokenIds\",\"type\":\"uint256[]\"},{\"internalType\":\"uint256\",\"name\":\"_price\",\"type\":\"uint256\"}],\"name\":\"cancelBookRoom\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256[]\",\"name\":\"_tokenIds\",\"type\":\"uint256[]\"}],\"name\":\"checkIn\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"checkOut\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"createListRoom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_listRoomId\",\"type\":\"uint256\"}],\"name\":\"deleteListRoom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"getOwnerOf\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"landLord\",\"outputs\":[{\"internalType\":\"addresspayable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"listRoomCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"listRoomIdToListRoom\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"listRoomId\",\"type\":\"uint256\"},{\"internalType\":\"addresspayable\",\"name\":\"owner\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"listRooms\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"listRoomId\",\"type\":\"uint256\"},{\"internalType\":\"addresspayable\",\"name\":\"owner\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"nft\",\"outputs\":[{\"internalType\":\"contractRoomNFT\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_totalPrice\",\"type\":\"uint256\"}],\"name\":\"requestPayment\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"tokenIdToRoomId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
-	Bin: "0x608060405234801561001057600080fd5b50604051610ea4380380610ea483398101604081905261002f9161007d565b6001600055600480546001600160a01b039384166001600160a01b031991821617909155600280549290931691161790556100b7565b6001600160a01b038116811461007a57600080fd5b50565b6000806040838503121561009057600080fd5b825161009b81610065565b60208401519092506100ac81610065565b809150509250929050565b610dde806100c66000396000f3fe6080604052600436106100dd5760003560e01c80637e6e2d661161007f578063a8339a5911610059578063a8339a591461026f578063cba5751c14610282578063f38aac0514610297578063fd56f5b5146102ac57600080fd5b80637e6e2d66146101d557806383638710146102125780639c79e3011461023257600080fd5b806347ccca02116100bb57806347ccca021461014a5780635de988ab146101825780635fe27291146101955780637c4e87fd146101b557600080fd5b80630a523740146100e25780631358646e1461012257806315663ef614610137575b600080fd5b3480156100ee57600080fd5b5061010f6100fd366004610b19565b60056020526000908152604090205481565b6040519081526020015b60405180910390f35b610135610130366004610b32565b6102c2565b005b610135610145366004610c0f565b610401565b34801561015657600080fd5b5060045461016a906001600160a01b031681565b6040516001600160a01b039091168152602001610119565b610135610190366004610b19565b6105f2565b3480156101a157600080fd5b5060025461016a906001600160a01b031681565b3480156101c157600080fd5b506101356101d0366004610b19565b61068e565b3480156101e157600080fd5b506101f56101f0366004610b19565b610788565b604080519283526001600160a01b03909116602083015201610119565b34801561021e57600080fd5b5061016a61022d366004610b19565b6107bf565b34801561023e57600080fd5b506101f561024d366004610b19565b600660205260009081526040902080546001909101546001600160a01b031682565b61013561027d366004610c4c565b610835565b34801561028e57600080fd5b5061013561094b565b3480156102a357600080fd5b50610135610980565b3480156102b857600080fd5b5061010f60015481565b6102ca610ac0565b8134101561032a5760405162461bcd60e51b815260206004820152602260248201527f6e6f7420656e6f75676820657468657220746f20626f6f6b207468697320726f6044820152616f6d60f01b60648201526084015b60405180910390fd5b600480546040516309792c4960e31b81523392810192909252602482018390526000916001600160a01b0390911690634bc96248906044016020604051808303816000875af1158015610381573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906103a59190610c91565b604080518681526020810185905290810182905242606082015290915033907f324f54df56e9321588859c151dc1d48a827444c19bfdc05908760ec366f343049060800160405180910390a2506103fc6001600055565b505050565b60005b81518110156105ab5760045482516000916001600160a01b031690636352211e9085908590811061043757610437610caa565b60200260200101516040518263ffffffff1660e01b815260040161045d91815260200190565b602060405180830381865afa15801561047a573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061049e9190610cc0565b90506001600160a01b03811633146104f85760405162461bcd60e51b815260206004820152601d60248201527f596f7520617265206e6f74206f776e6572206f662074686973206e66740000006044820152606401610321565b60045483516001600160a01b03909116906323b872dd903390309087908790811061052557610525610caa565b60209081029190910101516040516001600160e01b031960e086901b1681526001600160a01b0393841660048201529290911660248301526044820152606401600060405180830381600087803b15801561057f57600080fd5b505af1158015610593573d6000803e3d6000fd5b505050505080806105a390610cf0565b915050610404565b50336001600160a01b03167fb6aa69ca1581faaa664c9aa421dea39b8a13e9ed194214b8538fe4fc3f5e46f182426040516105e7929190610d17565b60405180910390a250565b6002546001600160a01b0316331461065d5760405162461bcd60e51b815260206004820152602860248201527f596f75206d757374206265204c616e64204c6f726420746f20526571756573746044820152670814185e5b595b9d60c21b6064820152608401610321565b604051339082156108fc029083906000818181858888f1935050505015801561068a573d6000803e3d6000fd5b5050565b610696610ac0565b6002546001600160a01b031633146106c05760405162461bcd60e51b815260040161032190610d5f565b60005b6003548110156107455781600382815481106106e1576106e1610caa565b90600052602060002090600202016000015403610733576003818154811061070b5761070b610caa565b60009182526020822060029091020190815560010180546001600160a01b0319169055610745565b8061073d81610cf0565b9150506106c3565b5060405142815233907fce2b0d64af608a7801d45bbe06df40258994f355b230e9b051daf5c18e5a08459060200160405180910390a26107856001600055565b50565b6003818154811061079857600080fd5b6000918252602090912060029091020180546001909101549091506001600160a01b031682565b600480546040516331a9108f60e11b81529182018390526000916001600160a01b0390911690636352211e90602401602060405180830381865afa15801561080b573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061082f9190610cc0565b92915050565b60005b82518110156108d55760045483516001600160a01b03909116906342966c689085908490811061086a5761086a610caa565b60200260200101516040518263ffffffff1660e01b815260040161089091815260200190565b600060405180830381600087803b1580156108aa57600080fd5b505af11580156108be573d6000803e3d6000fd5b5050505080806108cd90610cf0565b915050610838565b50604051339082156108fc029083906000818181858888f19350505050158015610903573d6000803e3d6000fd5b50336001600160a01b03167f73446524eea227fd1c194dd0b9014ca0e1a8a828aca89faf082679cb67eeefe6834260405161093f929190610d17565b60405180910390a25050565b6040514281527f2c276699fefbad45f18509233bc03bb9cfdf41b18f32756933188bdef35fef559060200160405180910390a1565b610988610ac0565b6002546001600160a01b031633146109b25760405162461bcd60e51b815260040161032190610d5f565b6040805180820190915260008082526020820152600180549060006109d683610cf0565b9091555050600180548252600280546001600160a01b0390811660208501908152600380548086018255600091909152855193027fc2575a0e9e593c00f959f8c92f12db2869c3395a3b0502d05e2516446f71f85b810193909355517fc2575a0e9e593c00f959f8c92f12db2869c3395a3b0502d05e2516446f71f85c9092018054929091166001600160a01b03199092169190911790555460405133917f41bb3013ce0a5e645449c98720f443086dd75d13e6b583535e44cfe2041dc28591610aab91904290918252602082015260400190565b60405180910390a250610abe6001600055565b565b600260005403610b125760405162461bcd60e51b815260206004820152601f60248201527f5265656e7472616e637947756172643a207265656e7472616e742063616c6c006044820152606401610321565b6002600055565b600060208284031215610b2b57600080fd5b5035919050565b600080600060608486031215610b4757600080fd5b505081359360208301359350604090920135919050565b634e487b7160e01b600052604160045260246000fd5b600082601f830112610b8557600080fd5b8135602067ffffffffffffffff80831115610ba257610ba2610b5e565b8260051b604051601f19603f83011681018181108482111715610bc757610bc7610b5e565b604052938452858101830193838101925087851115610be557600080fd5b83870191505b84821015610c0457813583529183019190830190610beb565b979650505050505050565b600060208284031215610c2157600080fd5b813567ffffffffffffffff811115610c3857600080fd5b610c4484828501610b74565b949350505050565b60008060408385031215610c5f57600080fd5b823567ffffffffffffffff811115610c7657600080fd5b610c8285828601610b74565b95602094909401359450505050565b600060208284031215610ca357600080fd5b5051919050565b634e487b7160e01b600052603260045260246000fd5b600060208284031215610cd257600080fd5b81516001600160a01b0381168114610ce957600080fd5b9392505050565b600060018201610d1057634e487b7160e01b600052601160045260246000fd5b5060010190565b604080825283519082018190526000906020906060840190828701845b82811015610d5057815184529284019290840190600101610d34565b50505092019290925292915050565b60208082526029908201527f596f75206d757374206265204c616e64204c6f726420746f20437265617465206040820152684c69737420526f6f6d60b81b60608201526080019056fea26469706673582212203e5344dcc8584603e05a832d147e1aae48db5cb54012bb094aad3df97d062d9364736f6c63430008110033",
+	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_nftAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"numberOfdates\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"startTokenId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"booker\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"BookRoom\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256[]\",\"name\":\"tokenIds\",\"type\":\"uint256[]\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"canceler\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"CancelBookRoom\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256[]\",\"name\":\"tokenIds\",\"type\":\"uint256[]\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"checker\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"CheckIn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"CheckOut\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"listRoomId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"CreateListRoom\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"deleter\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"DeleteListRoom\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_totalPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_numberOfdates\",\"type\":\"uint256\"}],\"name\":\"bookRoom\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256[]\",\"name\":\"_tokenIds\",\"type\":\"uint256[]\"},{\"internalType\":\"uint256\",\"name\":\"_price\",\"type\":\"uint256\"}],\"name\":\"cancelBookRoom\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256[]\",\"name\":\"_tokenIds\",\"type\":\"uint256[]\"}],\"name\":\"checkIn\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"checkOut\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"createListRoom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_listRoomId\",\"type\":\"uint256\"}],\"name\":\"deleteListRoom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAccountBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getContractBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getListRooms\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"listRoomId\",\"type\":\"uint256\"},{\"internalType\":\"addresspayable\",\"name\":\"owner\",\"type\":\"address\"}],\"internalType\":\"structHotel.ListRoom[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"getOwnerOf\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"listRoomCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"listRoomIdToListRoom\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"listRoomId\",\"type\":\"uint256\"},{\"internalType\":\"addresspayable\",\"name\":\"owner\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"listRooms\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"listRoomId\",\"type\":\"uint256\"},{\"internalType\":\"addresspayable\",\"name\":\"owner\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"nft\",\"outputs\":[{\"internalType\":\"contractRoomNFT\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_totalPrice\",\"type\":\"uint256\"}],\"name\":\"requestPayment\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"tokenIdToRoomId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"tokenIdToRoomNFTState\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256[]\",\"name\":\"_tokenIds\",\"type\":\"uint256[]\"},{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"tranferRoomNFT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	Bin: "0x608060405234801561001057600080fd5b5060405161105f38038061105f83398101604081905261002f91610059565b6001600055600380546001600160a01b0319166001600160a01b0392909216919091179055610089565b60006020828403121561006b57600080fd5b81516001600160a01b038116811461008257600080fd5b9392505050565b610fc7806100986000396000f3fe6080604052600436106101095760003560e01c80638a3a1a1811610095578063a8339a5911610064578063a8339a5914610302578063cba5751c14610315578063e8d565201461032a578063f38aac051461034c578063fd56f5b51461036157600080fd5b80638a3a1a181461025257806394656214146102655780639c79e301146102a5578063a03d5ecc146102e257600080fd5b80636896fabf116100dc5780636896fabf146101ae5780636f9fb98a146101c25780637c4e87fd146101d55780637e6e2d66146101f5578063836387101461023257600080fd5b80630a5237401461010e57806315663ef61461014e57806347ccca02146101635780635de988ab1461019b575b600080fd5b34801561011a57600080fd5b5061013b610129366004610ca2565b60046020526000908152604090205481565b6040519081526020015b60405180910390f35b61016161015c366004610d6c565b610377565b005b34801561016f57600080fd5b50600354610183906001600160a01b031681565b6040516001600160a01b039091168152602001610145565b6101616101a9366004610ca2565b61059d565b3480156101ba57600080fd5b50333161013b565b3480156101ce57600080fd5b504761013b565b3480156101e157600080fd5b506101616101f0366004610ca2565b6105ce565b34801561020157600080fd5b50610215610210366004610ca2565b61069e565b604080519283526001600160a01b03909116602083015201610145565b34801561023e57600080fd5b5061018361024d366004610ca2565b6106d5565b610161610260366004610da9565b610749565b34801561027157600080fd5b50610295610280366004610ca2565b60066020526000908152604090205460ff1681565b6040519015158152602001610145565b3480156102b157600080fd5b506102156102c0366004610ca2565b600560205260009081526040902080546001909101546001600160a01b031682565b3480156102ee57600080fd5b506101616102fd366004610de0565b6108b8565b610161610310366004610e32565b61097b565b34801561032157600080fd5b50610161610a91565b34801561033657600080fd5b5061033f610ac6565b6040516101459190610e77565b34801561035857600080fd5b50610161610b3b565b34801561036d57600080fd5b5061013b60015481565b60005b81518110156105565760035482516000916001600160a01b031690636352211e908590859081106103ad576103ad610ecf565b60200260200101516040518263ffffffff1660e01b81526004016103d391815260200190565b602060405180830381865afa1580156103f0573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906104149190610ee5565b90506001600160a01b03811633146104735760405162461bcd60e51b815260206004820152601d60248201527f596f7520617265206e6f74206f776e6572206f662074686973206e667400000060448201526064015b60405180910390fd5b6006600084848151811061048957610489610ecf565b60209081029190910181015182528101919091526040016000205460ff166104fd5760405162461bcd60e51b815260206004820152602160248201527f596f7572204e4654206e6f7420617661696c61626c6520746f20636865636b496044820152603760f91b606482015260840161046a565b60006006600085858151811061051557610515610ecf565b6020026020010151815260200190815260200160002060006101000a81548160ff02191690831515021790555050808061054e90610f09565b91505061037a565b50336001600160a01b03167fb6aa69ca1581faaa664c9aa421dea39b8a13e9ed194214b8538fe4fc3f5e46f18242604051610592929190610f30565b60405180910390a250565b604051339082156108fc029083906000818181858888f193505050501580156105ca573d6000803e3d6000fd5b5050565b6105d6610c49565b60005b60025481101561065b5781600282815481106105f7576105f7610ecf565b90600052602060002090600202016000015403610649576002818154811061062157610621610ecf565b60009182526020822060029091020190815560010180546001600160a01b031916905561065b565b8061065381610f09565b9150506105d9565b5060405142815233907fce2b0d64af608a7801d45bbe06df40258994f355b230e9b051daf5c18e5a08459060200160405180910390a261069b6001600055565b50565b600281815481106106ae57600080fd5b6000918252602090912060029091020180546001909101549091506001600160a01b031682565b6003546040516331a9108f60e11b8152600481018390526000916001600160a01b031690636352211e90602401602060405180830381865afa15801561071f573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906107439190610ee5565b92915050565b610751610c49565b813410156107ac5760405162461bcd60e51b815260206004820152602260248201527f6e6f7420656e6f75676820657468657220746f20626f6f6b207468697320726f6044820152616f6d60f01b606482015260840161046a565b6003546040516309792c4960e31b8152336004820152602481018390526000916001600160a01b031690634bc96248906044016020604051808303816000875af11580156107fe573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906108229190610f78565b90508060005b83811015610869576000828152600660205260409020805460ff191660011790558161085381610f09565b925050808061086190610f09565b915050610828565b5060408051848152602081018490524281830152905133917f133b114160665140104c84b124c4f21992bbdb4dc0ece92ddcfaa9b4016cfc28919081900360600190a250506105ca6001600055565b60005b82518110156109765760035483516001600160a01b03909116906323b872dd90339085908790869081106108f1576108f1610ecf565b60209081029190910101516040516001600160e01b031960e086901b1681526001600160a01b0393841660048201529290911660248301526044820152606401600060405180830381600087803b15801561094b57600080fd5b505af115801561095f573d6000803e3d6000fd5b50505050808061096e90610f09565b9150506108bb565b505050565b60005b8251811015610a1b5760035483516001600160a01b03909116906342966c68908590849081106109b0576109b0610ecf565b60200260200101516040518263ffffffff1660e01b81526004016109d691815260200190565b600060405180830381600087803b1580156109f057600080fd5b505af1158015610a04573d6000803e3d6000fd5b505050508080610a1390610f09565b91505061097e565b50604051339082156108fc029083906000818181858888f19350505050158015610a49573d6000803e3d6000fd5b50336001600160a01b03167f73446524eea227fd1c194dd0b9014ca0e1a8a828aca89faf082679cb67eeefe68342604051610a85929190610f30565b60405180910390a25050565b6040514281527f2c276699fefbad45f18509233bc03bb9cfdf41b18f32756933188bdef35fef559060200160405180910390a1565b60606002805480602002602001604051908101604052809291908181526020016000905b82821015610b325760008481526020908190206040805180820190915260028502909101805482526001908101546001600160a01b0316828401529083529092019101610aea565b50505050905090565b610b43610c49565b604080518082019091526000808252602082015260018054906000610b6783610f09565b909155505060018054825233602083018181526002805480850182556000829052855191027f405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ace81019190915590517f405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5acf90910180546001600160a01b03929092166001600160a01b031990921691909117905590546040517f41bb3013ce0a5e645449c98720f443086dd75d13e6b583535e44cfe2041dc28591610c34914290918252602082015260400190565b60405180910390a250610c476001600055565b565b600260005403610c9b5760405162461bcd60e51b815260206004820152601f60248201527f5265656e7472616e637947756172643a207265656e7472616e742063616c6c00604482015260640161046a565b6002600055565b600060208284031215610cb457600080fd5b5035919050565b634e487b7160e01b600052604160045260246000fd5b600082601f830112610ce257600080fd5b8135602067ffffffffffffffff80831115610cff57610cff610cbb565b8260051b604051601f19603f83011681018181108482111715610d2457610d24610cbb565b604052938452858101830193838101925087851115610d4257600080fd5b83870191505b84821015610d6157813583529183019190830190610d48565b979650505050505050565b600060208284031215610d7e57600080fd5b813567ffffffffffffffff811115610d9557600080fd5b610da184828501610cd1565b949350505050565b60008060408385031215610dbc57600080fd5b50508035926020909101359150565b6001600160a01b038116811461069b57600080fd5b60008060408385031215610df357600080fd5b823567ffffffffffffffff811115610e0a57600080fd5b610e1685828601610cd1565b9250506020830135610e2781610dcb565b809150509250929050565b60008060408385031215610e4557600080fd5b823567ffffffffffffffff811115610e5c57600080fd5b610e6885828601610cd1565b95602094909401359450505050565b602080825282518282018190526000919060409081850190868401855b82811015610ec2578151805185528601516001600160a01b0316868501529284019290850190600101610e94565b5091979650505050505050565b634e487b7160e01b600052603260045260246000fd5b600060208284031215610ef757600080fd5b8151610f0281610dcb565b9392505050565b600060018201610f2957634e487b7160e01b600052601160045260246000fd5b5060010190565b604080825283519082018190526000906020906060840190828701845b82811015610f6957815184529284019290840190600101610f4d565b50505092019290925292915050565b600060208284031215610f8a57600080fd5b505191905056fea26469706673582212206b83e44505cb49b3c10068e589a5218c26a6ba380284667d4e6e100ea6e6ba7d64736f6c63430008110033",
 }
 
 // HotelABI is the input ABI used to generate the binding from.
@@ -43,7 +49,7 @@ var HotelABI = HotelMetaData.ABI
 var HotelBin = HotelMetaData.Bin
 
 // DeployHotel deploys a new Ethereum contract, binding an instance of Hotel to it.
-func DeployHotel(auth *bind.TransactOpts, backend bind.ContractBackend, _nftAddress common.Address, _landLord common.Address) (common.Address, *types.Transaction, *Hotel, error) {
+func DeployHotel(auth *bind.TransactOpts, backend bind.ContractBackend, _nftAddress common.Address) (common.Address, *types.Transaction, *Hotel, error) {
 	parsed, err := HotelMetaData.GetAbi()
 	if err != nil {
 		return common.Address{}, nil, nil, err
@@ -52,7 +58,7 @@ func DeployHotel(auth *bind.TransactOpts, backend bind.ContractBackend, _nftAddr
 		return common.Address{}, nil, nil, errors.New("GetABI returned nil")
 	}
 
-	address, tx, contract, err := bind.DeployContract(auth, *parsed, common.FromHex(HotelBin), backend, _nftAddress, _landLord)
+	address, tx, contract, err := bind.DeployContract(auth, *parsed, common.FromHex(HotelBin), backend, _nftAddress)
 	if err != nil {
 		return common.Address{}, nil, nil, err
 	}
@@ -201,6 +207,99 @@ func (_Hotel *HotelTransactorRaw) Transact(opts *bind.TransactOpts, method strin
 	return _Hotel.Contract.contract.Transact(opts, method, params...)
 }
 
+// GetAccountBalance is a free data retrieval call binding the contract method 0x6896fabf.
+//
+// Solidity: function getAccountBalance() view returns(uint256)
+func (_Hotel *HotelCaller) GetAccountBalance(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _Hotel.contract.Call(opts, &out, "getAccountBalance")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// GetAccountBalance is a free data retrieval call binding the contract method 0x6896fabf.
+//
+// Solidity: function getAccountBalance() view returns(uint256)
+func (_Hotel *HotelSession) GetAccountBalance() (*big.Int, error) {
+	return _Hotel.Contract.GetAccountBalance(&_Hotel.CallOpts)
+}
+
+// GetAccountBalance is a free data retrieval call binding the contract method 0x6896fabf.
+//
+// Solidity: function getAccountBalance() view returns(uint256)
+func (_Hotel *HotelCallerSession) GetAccountBalance() (*big.Int, error) {
+	return _Hotel.Contract.GetAccountBalance(&_Hotel.CallOpts)
+}
+
+// GetContractBalance is a free data retrieval call binding the contract method 0x6f9fb98a.
+//
+// Solidity: function getContractBalance() view returns(uint256)
+func (_Hotel *HotelCaller) GetContractBalance(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _Hotel.contract.Call(opts, &out, "getContractBalance")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// GetContractBalance is a free data retrieval call binding the contract method 0x6f9fb98a.
+//
+// Solidity: function getContractBalance() view returns(uint256)
+func (_Hotel *HotelSession) GetContractBalance() (*big.Int, error) {
+	return _Hotel.Contract.GetContractBalance(&_Hotel.CallOpts)
+}
+
+// GetContractBalance is a free data retrieval call binding the contract method 0x6f9fb98a.
+//
+// Solidity: function getContractBalance() view returns(uint256)
+func (_Hotel *HotelCallerSession) GetContractBalance() (*big.Int, error) {
+	return _Hotel.Contract.GetContractBalance(&_Hotel.CallOpts)
+}
+
+// GetListRooms is a free data retrieval call binding the contract method 0xe8d56520.
+//
+// Solidity: function getListRooms() view returns((uint256,address)[])
+func (_Hotel *HotelCaller) GetListRooms(opts *bind.CallOpts) ([]HotelListRoom, error) {
+	var out []interface{}
+	err := _Hotel.contract.Call(opts, &out, "getListRooms")
+
+	if err != nil {
+		return *new([]HotelListRoom), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]HotelListRoom)).(*[]HotelListRoom)
+
+	return out0, err
+
+}
+
+// GetListRooms is a free data retrieval call binding the contract method 0xe8d56520.
+//
+// Solidity: function getListRooms() view returns((uint256,address)[])
+func (_Hotel *HotelSession) GetListRooms() ([]HotelListRoom, error) {
+	return _Hotel.Contract.GetListRooms(&_Hotel.CallOpts)
+}
+
+// GetListRooms is a free data retrieval call binding the contract method 0xe8d56520.
+//
+// Solidity: function getListRooms() view returns((uint256,address)[])
+func (_Hotel *HotelCallerSession) GetListRooms() ([]HotelListRoom, error) {
+	return _Hotel.Contract.GetListRooms(&_Hotel.CallOpts)
+}
+
 // GetOwnerOf is a free data retrieval call binding the contract method 0x83638710.
 //
 // Solidity: function getOwnerOf(uint256 _tokenId) view returns(address)
@@ -230,37 +329,6 @@ func (_Hotel *HotelSession) GetOwnerOf(_tokenId *big.Int) (common.Address, error
 // Solidity: function getOwnerOf(uint256 _tokenId) view returns(address)
 func (_Hotel *HotelCallerSession) GetOwnerOf(_tokenId *big.Int) (common.Address, error) {
 	return _Hotel.Contract.GetOwnerOf(&_Hotel.CallOpts, _tokenId)
-}
-
-// LandLord is a free data retrieval call binding the contract method 0x5fe27291.
-//
-// Solidity: function landLord() view returns(address)
-func (_Hotel *HotelCaller) LandLord(opts *bind.CallOpts) (common.Address, error) {
-	var out []interface{}
-	err := _Hotel.contract.Call(opts, &out, "landLord")
-
-	if err != nil {
-		return *new(common.Address), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
-
-	return out0, err
-
-}
-
-// LandLord is a free data retrieval call binding the contract method 0x5fe27291.
-//
-// Solidity: function landLord() view returns(address)
-func (_Hotel *HotelSession) LandLord() (common.Address, error) {
-	return _Hotel.Contract.LandLord(&_Hotel.CallOpts)
-}
-
-// LandLord is a free data retrieval call binding the contract method 0x5fe27291.
-//
-// Solidity: function landLord() view returns(address)
-func (_Hotel *HotelCallerSession) LandLord() (common.Address, error) {
-	return _Hotel.Contract.LandLord(&_Hotel.CallOpts)
 }
 
 // ListRoomCount is a free data retrieval call binding the contract method 0xfd56f5b5.
@@ -446,25 +514,56 @@ func (_Hotel *HotelCallerSession) TokenIdToRoomId(arg0 *big.Int) (*big.Int, erro
 	return _Hotel.Contract.TokenIdToRoomId(&_Hotel.CallOpts, arg0)
 }
 
-// BookRoom is a paid mutator transaction binding the contract method 0x1358646e.
+// TokenIdToRoomNFTState is a free data retrieval call binding the contract method 0x94656214.
 //
-// Solidity: function bookRoom(uint256 _roomId, uint256 _totalPrice, uint256 _numberOfdates) payable returns()
-func (_Hotel *HotelTransactor) BookRoom(opts *bind.TransactOpts, _roomId *big.Int, _totalPrice *big.Int, _numberOfdates *big.Int) (*types.Transaction, error) {
-	return _Hotel.contract.Transact(opts, "bookRoom", _roomId, _totalPrice, _numberOfdates)
+// Solidity: function tokenIdToRoomNFTState(uint256 ) view returns(bool)
+func (_Hotel *HotelCaller) TokenIdToRoomNFTState(opts *bind.CallOpts, arg0 *big.Int) (bool, error) {
+	var out []interface{}
+	err := _Hotel.contract.Call(opts, &out, "tokenIdToRoomNFTState", arg0)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
-// BookRoom is a paid mutator transaction binding the contract method 0x1358646e.
+// TokenIdToRoomNFTState is a free data retrieval call binding the contract method 0x94656214.
 //
-// Solidity: function bookRoom(uint256 _roomId, uint256 _totalPrice, uint256 _numberOfdates) payable returns()
-func (_Hotel *HotelSession) BookRoom(_roomId *big.Int, _totalPrice *big.Int, _numberOfdates *big.Int) (*types.Transaction, error) {
-	return _Hotel.Contract.BookRoom(&_Hotel.TransactOpts, _roomId, _totalPrice, _numberOfdates)
+// Solidity: function tokenIdToRoomNFTState(uint256 ) view returns(bool)
+func (_Hotel *HotelSession) TokenIdToRoomNFTState(arg0 *big.Int) (bool, error) {
+	return _Hotel.Contract.TokenIdToRoomNFTState(&_Hotel.CallOpts, arg0)
 }
 
-// BookRoom is a paid mutator transaction binding the contract method 0x1358646e.
+// TokenIdToRoomNFTState is a free data retrieval call binding the contract method 0x94656214.
 //
-// Solidity: function bookRoom(uint256 _roomId, uint256 _totalPrice, uint256 _numberOfdates) payable returns()
-func (_Hotel *HotelTransactorSession) BookRoom(_roomId *big.Int, _totalPrice *big.Int, _numberOfdates *big.Int) (*types.Transaction, error) {
-	return _Hotel.Contract.BookRoom(&_Hotel.TransactOpts, _roomId, _totalPrice, _numberOfdates)
+// Solidity: function tokenIdToRoomNFTState(uint256 ) view returns(bool)
+func (_Hotel *HotelCallerSession) TokenIdToRoomNFTState(arg0 *big.Int) (bool, error) {
+	return _Hotel.Contract.TokenIdToRoomNFTState(&_Hotel.CallOpts, arg0)
+}
+
+// BookRoom is a paid mutator transaction binding the contract method 0x8a3a1a18.
+//
+// Solidity: function bookRoom(uint256 _totalPrice, uint256 _numberOfdates) payable returns()
+func (_Hotel *HotelTransactor) BookRoom(opts *bind.TransactOpts, _totalPrice *big.Int, _numberOfdates *big.Int) (*types.Transaction, error) {
+	return _Hotel.contract.Transact(opts, "bookRoom", _totalPrice, _numberOfdates)
+}
+
+// BookRoom is a paid mutator transaction binding the contract method 0x8a3a1a18.
+//
+// Solidity: function bookRoom(uint256 _totalPrice, uint256 _numberOfdates) payable returns()
+func (_Hotel *HotelSession) BookRoom(_totalPrice *big.Int, _numberOfdates *big.Int) (*types.Transaction, error) {
+	return _Hotel.Contract.BookRoom(&_Hotel.TransactOpts, _totalPrice, _numberOfdates)
+}
+
+// BookRoom is a paid mutator transaction binding the contract method 0x8a3a1a18.
+//
+// Solidity: function bookRoom(uint256 _totalPrice, uint256 _numberOfdates) payable returns()
+func (_Hotel *HotelTransactorSession) BookRoom(_totalPrice *big.Int, _numberOfdates *big.Int) (*types.Transaction, error) {
+	return _Hotel.Contract.BookRoom(&_Hotel.TransactOpts, _totalPrice, _numberOfdates)
 }
 
 // CancelBookRoom is a paid mutator transaction binding the contract method 0xa8339a59.
@@ -593,6 +692,27 @@ func (_Hotel *HotelTransactorSession) RequestPayment(_totalPrice *big.Int) (*typ
 	return _Hotel.Contract.RequestPayment(&_Hotel.TransactOpts, _totalPrice)
 }
 
+// TranferRoomNFT is a paid mutator transaction binding the contract method 0xa03d5ecc.
+//
+// Solidity: function tranferRoomNFT(uint256[] _tokenIds, address receiver) returns()
+func (_Hotel *HotelTransactor) TranferRoomNFT(opts *bind.TransactOpts, _tokenIds []*big.Int, receiver common.Address) (*types.Transaction, error) {
+	return _Hotel.contract.Transact(opts, "tranferRoomNFT", _tokenIds, receiver)
+}
+
+// TranferRoomNFT is a paid mutator transaction binding the contract method 0xa03d5ecc.
+//
+// Solidity: function tranferRoomNFT(uint256[] _tokenIds, address receiver) returns()
+func (_Hotel *HotelSession) TranferRoomNFT(_tokenIds []*big.Int, receiver common.Address) (*types.Transaction, error) {
+	return _Hotel.Contract.TranferRoomNFT(&_Hotel.TransactOpts, _tokenIds, receiver)
+}
+
+// TranferRoomNFT is a paid mutator transaction binding the contract method 0xa03d5ecc.
+//
+// Solidity: function tranferRoomNFT(uint256[] _tokenIds, address receiver) returns()
+func (_Hotel *HotelTransactorSession) TranferRoomNFT(_tokenIds []*big.Int, receiver common.Address) (*types.Transaction, error) {
+	return _Hotel.Contract.TranferRoomNFT(&_Hotel.TransactOpts, _tokenIds, receiver)
+}
+
 // HotelBookRoomIterator is returned from FilterBookRoom and is used to iterate over the raw logs and unpacked data for BookRoom events raised by the Hotel contract.
 type HotelBookRoomIterator struct {
 	Event *HotelBookRoom // Event containing the contract specifics and raw log
@@ -662,7 +782,6 @@ func (it *HotelBookRoomIterator) Close() error {
 
 // HotelBookRoom represents a BookRoom event raised by the Hotel contract.
 type HotelBookRoom struct {
-	RoomId        *big.Int
 	NumberOfdates *big.Int
 	StartTokenId  *big.Int
 	Booker        common.Address
@@ -670,9 +789,9 @@ type HotelBookRoom struct {
 	Raw           types.Log // Blockchain specific contextual infos
 }
 
-// FilterBookRoom is a free log retrieval operation binding the contract event 0x324f54df56e9321588859c151dc1d48a827444c19bfdc05908760ec366f34304.
+// FilterBookRoom is a free log retrieval operation binding the contract event 0x133b114160665140104c84b124c4f21992bbdb4dc0ece92ddcfaa9b4016cfc28.
 //
-// Solidity: event BookRoom(uint256 roomId, uint256 numberOfdates, uint256 startTokenId, address indexed booker, uint256 timestamp)
+// Solidity: event BookRoom(uint256 numberOfdates, uint256 startTokenId, address indexed booker, uint256 timestamp)
 func (_Hotel *HotelFilterer) FilterBookRoom(opts *bind.FilterOpts, booker []common.Address) (*HotelBookRoomIterator, error) {
 
 	var bookerRule []interface{}
@@ -687,9 +806,9 @@ func (_Hotel *HotelFilterer) FilterBookRoom(opts *bind.FilterOpts, booker []comm
 	return &HotelBookRoomIterator{contract: _Hotel.contract, event: "BookRoom", logs: logs, sub: sub}, nil
 }
 
-// WatchBookRoom is a free log subscription operation binding the contract event 0x324f54df56e9321588859c151dc1d48a827444c19bfdc05908760ec366f34304.
+// WatchBookRoom is a free log subscription operation binding the contract event 0x133b114160665140104c84b124c4f21992bbdb4dc0ece92ddcfaa9b4016cfc28.
 //
-// Solidity: event BookRoom(uint256 roomId, uint256 numberOfdates, uint256 startTokenId, address indexed booker, uint256 timestamp)
+// Solidity: event BookRoom(uint256 numberOfdates, uint256 startTokenId, address indexed booker, uint256 timestamp)
 func (_Hotel *HotelFilterer) WatchBookRoom(opts *bind.WatchOpts, sink chan<- *HotelBookRoom, booker []common.Address) (event.Subscription, error) {
 
 	var bookerRule []interface{}
@@ -729,9 +848,9 @@ func (_Hotel *HotelFilterer) WatchBookRoom(opts *bind.WatchOpts, sink chan<- *Ho
 	}), nil
 }
 
-// ParseBookRoom is a log parse operation binding the contract event 0x324f54df56e9321588859c151dc1d48a827444c19bfdc05908760ec366f34304.
+// ParseBookRoom is a log parse operation binding the contract event 0x133b114160665140104c84b124c4f21992bbdb4dc0ece92ddcfaa9b4016cfc28.
 //
-// Solidity: event BookRoom(uint256 roomId, uint256 numberOfdates, uint256 startTokenId, address indexed booker, uint256 timestamp)
+// Solidity: event BookRoom(uint256 numberOfdates, uint256 startTokenId, address indexed booker, uint256 timestamp)
 func (_Hotel *HotelFilterer) ParseBookRoom(log types.Log) (*HotelBookRoom, error) {
 	event := new(HotelBookRoom)
 	if err := _Hotel.contract.UnpackLog(event, "BookRoom", log); err != nil {

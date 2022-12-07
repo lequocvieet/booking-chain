@@ -52,6 +52,10 @@ contract Hotel is ReentrancyGuard {
 
     event CheckOut(uint256 timestamp);
 
+    event RequestPayment(address requester, uint256 price);
+
+    event TranferRoomNFT(address from, address to, uint256[] tokenIds);
+
     function createListRoom() external nonReentrant {
         ListRoom memory listRoom;
         listRoomCount++;
@@ -118,19 +122,20 @@ contract Hotel is ReentrancyGuard {
                 tokenIdToRoomNFTState[_tokenIds[i]],
                 "Your NFT not available to checkIn"
             );
-            tokenIdToRoomNFTState[_tokenIds[i]] = false;// now NFT is un available
+            tokenIdToRoomNFTState[_tokenIds[i]] = false; // now NFT is un available
         }
         emit CheckIn(_tokenIds, msg.sender, block.timestamp);
     }
 
-    function tranferRoomNFT(
-        uint256[] memory _tokenIds,
-        address receiver
-    ) public {
+    function tranferRoomNFT(uint256[] memory _tokenIds, address _receiver)
+        public
+    {
         for (uint256 i = 0; i < _tokenIds.length; i++) {
-            nft.transferFrom(msg.sender, receiver, _tokenIds[i]); 
-        }   
+            nft.transferFrom(msg.sender, _receiver, _tokenIds[i]);
+        }
+    emit TranferRoomNFT(msg.sender, _receiver, _tokenIds);
     }
+
     function checkOut() public {
         emit CheckOut(block.timestamp);
     }
@@ -138,6 +143,7 @@ contract Hotel is ReentrancyGuard {
     function requestPayment(uint256 _totalPrice) public payable {
         //check valid  day at backend
         payable(msg.sender).transfer(_totalPrice);
+        emit RequestPayment(msg.sender, _totalPrice);
     }
 
     function getOwnerOf(uint256 _tokenId) public view returns (address) {
@@ -152,7 +158,7 @@ contract Hotel is ReentrancyGuard {
         return address(this).balance;
     }
 
-    function getAccountBalance() public view returns (uint) {
+    function getAccountBalance() public view returns (uint256) {
         return msg.sender.balance;
     }
 }
