@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"golang_service/models"
 	"log"
 
@@ -17,8 +16,7 @@ func Init() *gorm.DB {
 		log.Fatalln(err)
 	}
 
-	err = db.AutoMigrate(&models.Room{})
-	fmt.Print(err)
+	db.AutoMigrate(&models.Room{})
 	db.AutoMigrate(&models.ListRoom{})
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.StateRoom{})
