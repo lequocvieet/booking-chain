@@ -10,9 +10,10 @@ func (m *Model) FindRoom(ID int) (Room, error) {
 	}
 	return room, nil
 }
+
 func (m *Model) SaveRoom(room Room) error {
 	m.DB.Save(&room)
-	return fmt.Errorf("Save room success!")
+	return fmt.Errorf("Save Room success!")
 }
 
 func (m *Model) DeleteRoom(roomId int) error {
