@@ -1,6 +1,18 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
+
+type Model struct {
+	DB *gorm.DB
+}
+
+func New(db *gorm.DB) Model {
+	return Model{db}
+}
 
 type ListRoom struct {
 	ID        int       `json:"id" gorm:"column:id"`
@@ -39,4 +51,13 @@ type User struct {
 	Address    string `json:"address" gorm:"column:address"`
 	PrivateKey string `json:"private_key" gorm:"column:private_key"`
 	Role       string `json:"role" gorm:"column:role"`
+}
+
+type RoomNFTIds struct {
+	RoomNFTIds []int `json:"roomNFTIds"`
+}
+
+type TransferRequest struct {
+	RoomNFTIds []int  `json:"roomNFTIds"`
+	Receiver   string `json:"receiver"`
 }

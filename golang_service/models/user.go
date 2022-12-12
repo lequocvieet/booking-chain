@@ -22,11 +22,20 @@ func Santize(data string) string {
 	return data
 }
 
+func NewUser(userName string, email string, password string) User {
+	u := User{
+		Email:    email,
+		UserName: userName,
+		Password: password,
+	}
+	return u
+}
+
 func (m *Model) FindUserByUserName(username string) (User, error) {
 	var user User
 	result := m.DB.Where("user_name = ?", username).First(&user)
 	if result.Error != nil {
-		return user, fmt.Errorf("Cannot Find User")
+		return user, fmt.Errorf("userName not exist")
 	}
 	return user, nil
 }
@@ -37,7 +46,7 @@ func (m *Model) FindUserByUserNameAndEmail(username string, email string) (User,
 		Where("user_name = ? and email=?", username, email).
 		First(&user)
 	if result.Error != nil {
-		return user, fmt.Errorf("Cannot Find User")
+		return user, fmt.Errorf("record not found")
 	}
 	return user, nil
 }

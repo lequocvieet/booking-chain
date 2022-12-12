@@ -8,12 +8,12 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
+var filterOpts = &bind.FilterOpts{Context: context.Background(), Start: 0, End: nil}
+
 func ListenEvent(addressIndexed common.Address, eventType string) interface{} {
 	conn := GetHotelContract()
 	var addressIndexeds []common.Address
 	addressIndexeds = append(addressIndexeds, addressIndexed)
-	filterOpts := &bind.FilterOpts{Context: context.Background(), Start: 0, End: nil}
-
 	switch eventType {
 	case "CreateListRoom":
 		itr, err := conn.FilterCreateListRoom(filterOpts, addressIndexeds)
@@ -75,4 +75,52 @@ func ListenEvent(addressIndexed common.Address, eventType string) interface{} {
 
 }
 
+func CaculateAllBookRoomEventByTokenID(tokenId int) int {
+	// address of etherum local node
+	conn := GetHotelContract()
+	var userAddresses []common.Address
+	// Filter event
+	itr, err := conn.FilterBookRoom(filterOpts, userAddresses)
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
+	//Loop over all found events
+	var count int = 0
+	for itr.Next() {
+		event := itr.Event
+		numberOfdates := event.NumberOfdates
+		startTokenId := int(event.StartTokenId.Uint64())
+		for i := 0; i < int(numberOfdates.Uint64()); i++ {
+			if startTokenId == tokenId {
+				count++
+			}
+			startTokenId++
+		}
 
+	}
+	return count
+}
+
+func CaculateAllCancelBookRoomEventByTokenID(tokenId int) int {
+	conn := GetHotelContract()
+	var userAddresses []common.Address
+	// Filter event
+	itr, err := conn.FilterCancelBookRoom(filterOpts, userAddresses)
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
+	//Loop over all found events
+	var count int = 0
+	for itr.Next() {
+		event := itr.Event
+		for i := 0; i < len(event.TokenIds); i++ {
+			if int(event.TokenIds[i].Uint64()) == tokenId {
+				count++
+			}
+		}
+
+	}
+	return count
+}

@@ -2,11 +2,20 @@ package models
 
 import "fmt"
 
-func (m *Model) FindRoom(ID int) (Room, error) {
+func NewRoom(ID int, pricePerDay float32, listRoomId int) Room {
+	u := Room{
+		ID:          ID,
+		PricePerDay: pricePerDay,
+		ListRoomId:  listRoomId,
+	}
+	return u
+}
+
+func (m *Model) FindRoomByID(ID int) (Room, error) {
 	var room Room
 	errFindRoom := m.DB.Where("id= ?", ID).First(&room)
 	if errFindRoom.Error != nil {
-		return room, fmt.Errorf("Room id does not exist!")
+		return room, fmt.Errorf("room id does not exist")
 	}
 	return room, nil
 }

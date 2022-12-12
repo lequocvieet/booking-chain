@@ -14,12 +14,8 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-var LOCAL_HARDHAT_URL = os.Getenv("LOCAL_HARDHAT_URL")
-var DEPLOYED_HOTEL_CONTRACT_ADDRESS = os.Getenv("DEPLOYED_HOTEL_CONTRACT_ADDRESS")
-var DEPLOYED_ROOMNFT_CONTRACT_ADDRESS = os.Getenv("DEPLOYED_ROOMNFT_CONTRACT_ADDRESS")
-
 func ConnectHardHatNode() *ethclient.Client {
-	client, err := ethclient.Dial(LOCAL_HARDHAT_URL)
+	client, err := ethclient.Dial(os.Getenv("LOCAL_HARDHAT_URL"))
 	if err != nil {
 		panic(err)
 	}
@@ -27,7 +23,8 @@ func ConnectHardHatNode() *ethclient.Client {
 }
 
 func GetHotelContract() *Hotel {
-	conn, err := NewHotel(common.HexToAddress(DEPLOYED_HOTEL_CONTRACT_ADDRESS), ConnectHardHatNode())
+
+	conn, err := NewHotel(common.HexToAddress(os.Getenv("DEPLOYED_HOTEL_CONTRACT_ADDRESS")), ConnectHardHatNode())
 	if err != nil {
 		panic(err)
 	}
@@ -35,16 +32,16 @@ func GetHotelContract() *Hotel {
 }
 
 func GetRoomNFTContract() *RoomNFT {
-	conn, err := NewRoomNFT(common.HexToAddress(DEPLOYED_ROOMNFT_CONTRACT_ADDRESS), ConnectHardHatNode())
+	conn, err := NewRoomNFT(common.HexToAddress(os.Getenv("DEPLOYED_ROOMNFT_CONTRACT_ADDRESS")), ConnectHardHatNode())
 	if err != nil {
 		panic(err)
 	}
 	return conn
 }
 
-//Only used for consumed gas function
-//view function do not consume gas so no need to sign by PrivateKey
-func SignTransaction(client *ethclient.Client, privateKeyAddress string, value uint64) (*bind.TransactOpts, error) {
+// Only used for consumed gas function
+// view function do not consume gas so no need to sign by PrivateKey
+func SignTransaction(privateKeyAddress string, value uint64) (*bind.TransactOpts, error) {
 
 	privateKey, err := crypto.HexToECDSA(privateKeyAddress)
 	if err != nil {
@@ -59,19 +56,19 @@ func SignTransaction(client *ethclient.Client, privateKeyAddress string, value u
 
 	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
 	fmt.Println(fromAddress)
-	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
+	nonce, err := ConnectHardHatNode().PendingNonceAt(context.Background(), fromAddress)
 	if err != nil {
 		return nil, fmt.Errorf("endingNonce error: %v", err)
 	}
 	fmt.Println("nonce=", nonce)
-	chainID, err := client.ChainID(context.Background())
+	chainID, err := ConnectHardHatNode().ChainID(context.Background())
 	if err != nil {
-		return nil, errors.New("ChainID error!")
+		return nil, errors.New("chainID error")
 	}
 	fmt.Println("ChainID", chainID)
 	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
 	if err != nil {
-		return nil, errors.New("NewKeyedTransactorWithChainID error!")
+		return nil, errors.New("newKeyedTransactorWithChainID error")
 	}
 	auth.Nonce = big.NewInt(int64(nonce))
 	if value != 0 {
@@ -80,6 +77,9 @@ func SignTransaction(client *ethclient.Client, privateKeyAddress string, value u
 		auth.Value = big.NewInt(0) // in wei
 	}
 	auth.GasLimit = uint64(0) // in units
-	auth.GasPrice, err = client.SuggestGasPrice(context.Background())
+	auth.GasPrice, err = ConnectHardHatNode().SuggestGasPrice(context.Background())
+	if err != nil {
+		return nil, errors.New("gas price setup error")
+	}
 	return auth, nil
 }
