@@ -21,7 +21,7 @@ type ListRoom struct {
 }
 
 type Room struct {
-	ID          int     `json:"id" gorm:"column:id"`
+	ID          int     `json:"id" gorm:"column:id;autoIncrement:true"`
 	PricePerDay float32 `json:"price_per_day" gorm:"column:price_per_day"`
 	ListRoomId  int     `json:"list_room_id" gorm:"column:list_room_id"`
 }

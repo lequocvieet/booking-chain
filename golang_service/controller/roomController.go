@@ -22,8 +22,6 @@ type roomController struct {
 	model *models.Model
 }
 
-var roomIdCount int = 1
-
 const dateLayout string = "2006-01-02"
 
 func NewRoomController(model *models.Model) roomController {
@@ -37,6 +35,10 @@ func (c roomController) CreateListRoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	landLord, err := c.model.FindUserByUserName(landLordName)
+	if err != nil {
+		res.JSON(w, 400, err.Error())
+		return
+	}
 	if landLord.Role != "landlord" {
 		res.JSON(w, 400, "you must be landlord to execute this function")
 		return
@@ -57,7 +59,11 @@ func (c roomController) CreateListRoom(w http.ResponseWriter, r *http.Request) {
 	//Save listroom to backend after listen createListRoomEvent
 	createListRoomEvent := contracts.ListenEvent(common.HexToAddress(landLord.Address), "CreateListRoom").(*contracts.HotelCreateListRoom)
 	listRoom := models.NewListRoom(int(createListRoomEvent.ListRoomId.Uint64()), landLord.ID, res.EpochTimeToDate(createListRoomEvent.Timestamp))
-	c.model.SaveListRoom(listRoom)
+	errCreateListRoom := c.model.SaveListRoom(listRoom)
+	if errCreateListRoom != nil {
+		res.JSON(w, 500, "create list room has fail")
+		return
+	}
 	res.JSON(w, 201, "create list room success")
 	return
 
@@ -98,7 +104,7 @@ func (c roomController) DeleteListRoom(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(listRoomId)
 	errDeleteListRoom := c.model.DeleteListRoom(id)
 	if errDeleteListRoom != nil {
-		res.JSON(w, 500, errDeleteListRoom)
+		res.JSON(w, 500, "delete list room has fail")
 		return
 	}
 	res.JSON(w, 201, "delete list room success")
@@ -118,27 +124,31 @@ func (c roomController) CreateRoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if landLord.Role != "landlord" {
-		res.JSON(w, 400, "You must be landlord to execute this function!")
+		res.JSON(w, 400, "you must be landlord to execute this function")
 		return
 	}
-	listRoomId := r.PostFormValue("listRoomId")
-	pricePerDay := r.PostFormValue("pricePerDay")
-	id, _ := strconv.Atoi(listRoomId)
-	_, errFindListRoom := c.model.FindListRoom(id)
+	listRoomId, _ := strconv.Atoi(r.PostFormValue("listRoomId"))
+	pricePerDay, _ := strconv.ParseFloat(r.PostFormValue("pricePerDay"), 32)
+	_, errFindListRoom := c.model.FindListRoom(listRoomId)
 	if errFindListRoom != nil {
-		res.JSON(w, 400, errFindListRoom)
+		res.JSON(w, 400, "list room id not exist")
 		return
 	}
-	value, _ := strconv.ParseFloat(pricePerDay, 32)
-	room := models.NewRoom(roomIdCount, float32(value), id)
-	c.model.SaveRoom(room) // save room off-chain
+	room := models.NewRoom(float32(pricePerDay), listRoomId)
+	roomId, err := c.model.SaveRoom(room) // save room off-chain
+	if err != nil {
+		res.JSON(w, 400, "create room fail")
+		return
+	}
 
 	//create default state
-	id, _ = strconv.Atoi(listRoomId)
-	stateRoom := models.NewStateRoom(roomIdCount, time.Time{}, time.Time{}, id, "Available")
-	roomIdCount++
-	c.model.SaveStateRoom(stateRoom) // save state of new room created
-	res.JSON(w, 201, "create room successful")
+	stateRoom := models.NewStateRoom(roomId, time.Time{}, time.Time{}, listRoomId, "Available")
+	errSaveStateRoom := c.model.SaveStateRoom(stateRoom) // save state of new room created
+	if errSaveStateRoom != nil {
+		res.JSON(w, 400, "create room fail")
+		return
+	}
+	res.JSON(w, 200, "create room successful")
 	return
 
 }
@@ -155,12 +165,12 @@ func (c roomController) UpdateRoomState(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	if landLord.Role != "landlord" {
-		res.JSON(w, 400, "You must be landlord to execute this function!")
+		res.JSON(w, 400, "you must be landlord to execute this function")
 		return
 	}
 	stateRoomId, _ := strconv.Atoi(r.PostFormValue("stateRoomId"))
 	listRoomId, _ := strconv.Atoi(r.PostFormValue("listRoomId"))
-	roomId, _ := strconv.Atoi(r.PostFormValue("listRoomId"))
+	roomId, _ := strconv.Atoi(r.PostFormValue("roomId"))
 	startUpdate := res.FormatTime(r.PostFormValue("startUpdate"))
 	endUpdate := res.FormatTime(r.PostFormValue("endUpdate"))
 	state := r.PostFormValue("state")
@@ -168,12 +178,12 @@ func (c roomController) UpdateRoomState(w http.ResponseWriter, r *http.Request) 
 	//verify list room id exist
 	_, errFindListRoom := c.model.FindListRoom(listRoomId)
 	if errFindListRoom != nil {
-		res.JSON(w, 400, errFindListRoom)
+		res.JSON(w, 400, "list room id not exist")
 		return
 	}
 	_, errFindRoom := c.model.FindRoomByID(roomId)
 	if errFindRoom != nil {
-		res.JSON(w, 400, errFindRoom)
+		res.JSON(w, 400, "room id not exist")
 		return
 	}
 	//verify update room state in the past
@@ -184,26 +194,42 @@ func (c roomController) UpdateRoomState(w http.ResponseWriter, r *http.Request) 
 
 	//Check at that time room is already used
 	var isUsed bool = true
-	roomNFTs := c.model.FindRoomNFTByRoomIdAndDateValid(roomId, startUpdate, endUpdate)
+	roomNFTs, errFindRoomNFT := c.model.FindRoomNFTByRoomIdAndDateValid(roomId, startUpdate, endUpdate)
+	if errFindRoomNFT != nil {
+		res.JSON(w, 400, "room nft not exist")
+		return
+	}
 	if len(roomNFTs) == 0 {
 		isUsed = false
 	}
 	//Check at that time room available or not
 	var available bool = true
-	stateRooms := c.model.FindStateRoom(roomId, listRoomId, startUpdate, endUpdate)
+	stateRooms, errFindStateRoom := c.model.FindStateRoom(roomId, listRoomId, startUpdate, endUpdate)
+	if errFindStateRoom != nil {
+		res.JSON(w, 400, "state room not exist")
+		return
+	}
 	if len(stateRooms) != 0 {
 		available = false
 	}
-	fmt.Print("available ", available)
+	fmt.Println("available ", available)
 
 	if isUsed == false && available == true {
 		//ready to update state
-		stateRoom := c.model.FindStateRoomById(stateRoomId)
+		stateRoom, errFindStateRoom := c.model.FindStateRoomById(stateRoomId)
+		if errFindStateRoom != nil {
+			res.JSON(w, 400, "state room not exist")
+			return
+		}
 		stateRoom.State = state
 		stateRoom.StartUpdate = startUpdate
 		stateRoom.EndUpdate = endUpdate
-		c.model.SaveStateRoom(stateRoom) // save state room off-chain
-		res.JSON(w, 201, "update state room successful")
+		errSaveStateRoom := c.model.SaveStateRoom(stateRoom) // save state room off-chain
+		if errSaveStateRoom != nil {
+			res.JSON(w, 400, "update state room fail")
+			return
+		}
+		res.JSON(w, 200, "update state room successful")
 		return
 	}
 	res.JSON(w, 400, "room already used or not available yet")
@@ -231,13 +257,13 @@ func (c roomController) BookRoom(w http.ResponseWriter, r *http.Request) {
 	//verify list room id exist
 	_, errFindListRoom := c.model.FindListRoom(listRoomId)
 	if errFindListRoom != nil {
-		res.JSON(w, 400, errFindListRoom)
+		res.JSON(w, 400, "list room id not exist")
 		return
 	}
 	//verify that room id  exist
 	room, errFindRoom := c.model.FindRoomByID(roomId)
 	if errFindRoom != nil {
-		res.JSON(w, 400, errFindRoom)
+		res.JSON(w, 400, "room id not exist")
 		return
 	}
 
@@ -258,7 +284,11 @@ func (c roomController) BookRoom(w http.ResponseWriter, r *http.Request) {
 	fmt.Print("available ", available)
 	//verify all room in range book is not booked before
 	var isUsed bool = true
-	roomNFTs := c.model.FindRoomNFTByRoomIdAndDateValid(roomId, startDay, endDay)
+	roomNFTs, errFindRoomNFT := c.model.FindRoomNFTByRoomIdAndDateValid(roomId, startDay, endDay)
+	if errFindRoomNFT != nil {
+		res.JSON(w, 400, "room info not exist")
+		return
+	}
 	if len(roomNFTs) == 0 {
 		isUsed = false
 	}
@@ -289,7 +319,11 @@ func (c roomController) BookRoom(w http.ResponseWriter, r *http.Request) {
 			roomNFT := models.NewRoomNFT(roomId, tokenID, bookRoomEvent.Booker.String(), startDay)
 			startDay = startDay.AddDate(0, 0, 1) // increase 1 days for later RoomNFT in for loop
 			tokenID++
-			c.model.SaveRoomNFT(roomNFT)
+			err := c.model.SaveRoomNFT(roomNFT)
+			if err != nil {
+				res.JSON(w, 400, "book room fail")
+				return
+			}
 		}
 		res.JSON(w, 201, "book room success")
 		return
@@ -328,7 +362,7 @@ func (c roomController) CancelBookRoom(w http.ResponseWriter, r *http.Request) {
 	for i := 0; i < len(roomNFTIds); i++ {
 		roomNFT, errFindRoomNFT := c.model.FindRoomNFTByID(roomNFTIds[i])
 		if errFindRoomNFT != nil {
-			res.JSON(w, 400, errFindRoomNFT)
+			res.JSON(w, 400, "roomNFT id not exist")
 			return
 		}
 		roomNFTs = append(roomNFTs, roomNFT)

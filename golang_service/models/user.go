@@ -42,13 +42,10 @@ func (m *Model) FindUserByUserName(username string) (User, error) {
 
 func (m *Model) FindUserByUserNameAndEmail(username string, email string) (User, error) {
 	var user User
-	result := m.DB.
+	err := m.DB.
 		Where("user_name = ? and email=?", username, email).
-		First(&user)
-	if result.Error != nil {
-		return user, fmt.Errorf("record not found")
-	}
-	return user, nil
+		First(&user).Error
+	return user, err
 }
 
 func (m *Model) SaveUser(user User) error {

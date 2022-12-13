@@ -92,10 +92,6 @@ func (c userController) Register(w http.ResponseWriter, r *http.Request) {
 	email = models.Santize(email)
 	password = models.Santize(password)
 	user, err := c.model.FindUserByUserNameAndEmail(username, email)
-	if err.Error() != "record not found" {
-		res.JSON(w, 409, "Bad query")
-		return
-	}
 	if user.UserName != "" {
 		res.JSON(w, 409, "User exists")
 		return
@@ -107,7 +103,7 @@ func (c userController) Register(w http.ResponseWriter, r *http.Request) {
 	}
 	user = models.NewUser(username, email, password)
 	c.model.SaveUser(user)
-	res.JSON(w, 201, "Register Succesfully")
+	res.JSON(w, 200, "Register Succesfully")
 	return
 }
 
@@ -157,7 +153,7 @@ func (c userController) CheckIn(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if user.Address != ownerAddress.Hex() {
-			res.JSON(w, 400, "You not own this NFT to checkin")
+			res.JSON(w, 400, "you not own this NFT to checkin")
 			return
 		}
 		//get earliest nft minted in batch

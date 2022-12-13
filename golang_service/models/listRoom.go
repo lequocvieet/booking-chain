@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -15,22 +14,25 @@ func NewListRoom(ID int, ownerID int, createDay time.Time) ListRoom {
 }
 func (m *Model) FindListRoom(ID int) (ListRoom, error) {
 	var listRoom ListRoom
-	errFindListRoom := m.DB.Where("id = ?", ID).First(&listRoom)
-	if errFindListRoom.Error != nil {
-		return listRoom, fmt.Errorf("list room id does not exist")
+	err := m.DB.Where("id = ?", ID).First(&listRoom).Error
+	if err != nil {
+		return ListRoom{}, err
 	}
 	return listRoom, nil
 }
 func (m *Model) SaveListRoom(listRoom ListRoom) error {
-	m.DB.Save(&listRoom)
-	return fmt.Errorf("save list room success")
+	err := m.DB.Save(&listRoom).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (m *Model) DeleteListRoom(listRoomId int) error {
 	var listRoom ListRoom
-	errDeleteListRoom := m.DB.Where("id = ?", listRoomId).Delete(&listRoom)
-	if errDeleteListRoom.Error != nil {
-		return fmt.Errorf("delete list room has failed")
+	err := m.DB.Where("id = ?", listRoomId).Delete(&listRoom).Error
+	if err != nil {
+		return err
 	}
-	return fmt.Errorf("delete list room success")
+	return nil
 }

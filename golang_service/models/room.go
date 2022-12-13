@@ -2,34 +2,38 @@ package models
 
 import "fmt"
 
-func NewRoom(ID int, pricePerDay float32, listRoomId int) Room {
-	u := Room{
-		ID:          ID,
+func NewRoom(pricePerDay float32, listRoomId int) *Room {
+	return &Room{
 		PricePerDay: pricePerDay,
 		ListRoomId:  listRoomId,
 	}
-	return u
+
 }
 
 func (m *Model) FindRoomByID(ID int) (Room, error) {
 	var room Room
-	errFindRoom := m.DB.Where("id= ?", ID).First(&room)
-	if errFindRoom.Error != nil {
-		return room, fmt.Errorf("room id does not exist")
+	err := m.DB.Where("id= ?", ID).First(&room).Error
+	if err != nil {
+		return Room{}, err
 	}
 	return room, nil
 }
 
-func (m *Model) SaveRoom(room Room) error {
-	m.DB.Save(&room)
-	return fmt.Errorf("Save Room success!")
+func (m *Model) SaveRoom(room *Room) (int, error) {
+	fmt.Println(room)
+	err := m.DB.Create(room).Error
+	if err != nil {
+		return 0, err
+	}
+
+	return room.ID, nil
 }
 
 func (m *Model) DeleteRoom(roomId int) error {
 	var room Room
-	errDeleteRoom := m.DB.Where("id = ?", roomId).Delete(&room)
-	if errDeleteRoom.Error != nil {
-		return fmt.Errorf("Delete room has failed!")
+	err := m.DB.Where("id = ?", roomId).Delete(&room).Error
+	if err != nil {
+		return err
 	}
-	return fmt.Errorf("Delete room success!")
+	return nil
 }
