@@ -1,4 +1,4 @@
-Run the Application
+Run Application
 
 ```bash
 touch .env
